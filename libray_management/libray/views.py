@@ -16,6 +16,15 @@ class Login(LoginView):
     '''login class '''
     template_name = 'login.html'
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     username = request.GET.get("username")
+    #     password = request.GET.get("password")
+    #     user = authenticate(username=username, password=password)
+    #     if user is not None:
+    #         if user.is_acctive:
+    #             login(request,user)
+    #     return super().dispatch(request, *args, **kwargs)
+    
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             # print(request.POST)
@@ -30,6 +39,7 @@ class Login(LoginView):
         user =  authenticate(username= username, password=password)
         print(user)
         if not user:
+            login(request,user)
             return JsonResponse({"error":"user not found."})
         
             

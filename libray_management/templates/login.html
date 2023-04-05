@@ -33,23 +33,23 @@
             type: "POST",
             headers: { "X-CSRFToken": "{{csrf_token}}" },
             data: login,
-            success: function (login,a,b,textStatus, xhr) {
-                var a = $.parseHTML(login)
-                console.log(a[0]["result_code"]);
+            success: function (login) {
+                {% comment %} var a = $.parseHTML(login) {% endcomment %}
+                console.log(login);
                 // alert(textStatus)
                 if (login == "success"){
                     window.location.href ="http://127.0.0.1:8000/"
                 }
                 // alert(login.error)
             },
-            statusCode:{
+            {% comment %} statusCode:{
                 200: function(responce){
                     alert("username or password not match");
                 }
-            },
-            error: function (error) {
+            }, {% endcomment %}
+            {% comment %} error: function (error) {
                 console.log("error",error);
-            },
+            }, {% endcomment %}
             
         });
     }
