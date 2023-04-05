@@ -5,7 +5,7 @@ from base.constance import Role
 
 class User(AbstractUser):
     username = models.CharField(max_length=100,unique=True)
-    full_name = models.CharField(max_length=100)
+    # full_name = models.CharField(max_length=100)
     role = models.CharField(max_length=10,choices=Role.choices())
     is_deleted = models.BooleanField(default=False)
     def soft_delete(self):

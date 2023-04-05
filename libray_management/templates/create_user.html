@@ -1,0 +1,68 @@
+{% include 'base.html' %}
+<!DOCTYPE html>
+<html>
+
+<body>
+    <!-- <form method="POST" action="{% url 'create_user' %} " style="padding: 10px;"> -->
+    <div class="mb-3 mt-3 " style="padding-left: 10px;">
+        <h3>Create User</h3>
+        <label for="username" class="form-label">Username:</label>
+        <input type="username" class="form-control" id="username" placeholder="Enter username" name="username"><br>
+        <label for="firstname" class="form-label">Firstname:</label>
+        <input type="firstname" class="form-control" id="firstname" placeholder="Enter firstname" name="firstname"><br>
+        <label for="lastname" class="form-label">Lastname:</label>
+        <input type="lastname" class="form-control" id="lastname" placeholder="Enter lastname" name="lastname"><br>
+        <label for="email" class="form-label">Email:</label>
+        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email"><br>
+        <label for="sel1" class="form-label">Select role:</label>
+        <select id="role">
+            <option value="">----------</option>
+            <option value="librarian">librarian</option>
+            <option value="student">student</option>
+
+        </select><br><br>
+
+        <button type="submit" class="btn btn-primary" onclick="addData()">Submit</button>
+    </div>
+    <!-- </form> -->
+</body>
+
+<script>
+    function addData() {
+        
+        var username = document.getElementById("username").value
+        var firstname = document.getElementById("firstname").value
+        var lastname = document.getElementById("lastname").value
+        var email = document.getElementById("email").value
+        var role = document.getElementById('role').selectedOptions[0].value;
+        // console.log(role);
+
+        var data = {
+            "username": username,
+            "first_name": firstname,
+            "last_name": lastname,
+            "email": email,
+            "role": role,
+        }
+        $.ajax({
+            url: "http://127.0.0.1:8000/create_user/",
+            type: "POST",
+            headers: { "X-CSRFToken": "{{csrf_token}}" },
+            data: data,
+            success: function (data) {
+                if (data == "success"){
+                    window.location.href ="http://127.0.0.1:8000/"
+                }
+            },
+            error: function (error) {
+                console.log("error",error);
+            },
+
+        });
+        
+
+
+    }
+</script>
+
+</html>

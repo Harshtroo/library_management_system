@@ -5,16 +5,15 @@ from base.constance import Role
 
 class UserForm(forms.ModelForm):
     '''user forms'''
-    password = forms.CharField(widget=forms.PasswordInput())
+    # password = forms.CharField(widget=forms.PasswordInput())
     class Meta:
         '''userform meta class'''
-
         model = User
-        fields = ["username","fullname","role"]
+        fields = ["username","first_name","last_name","email","role"]
 
     def save(self, commit=False):
         instance = super().save(commit=True)
-        instance.set_password(instance.username +'@1234')
+        instance.set_password(instance.username + '@1234')
         if commit:
             instance.save()
         return instance

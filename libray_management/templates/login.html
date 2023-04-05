@@ -1,10 +1,58 @@
+{% include 'base.html' %}
+
 <!DOCTYPE html>
 <html>
-    <body>
-        <form method="POST">
-            {% csrf_token %}
-            {{form.as_p}}
-            <button type="submit" class="btn btn-primary">Submit</button></a>
-        </form>
-    </body>
+
+<body>
+    <!-- <form method="POST"> -->
+        {% csrf_token %}
+        <div class="mb-3 mt-3">
+            <h3>Login Form</h3>
+            <label for="username" class="form-label">Username:</label>
+            <input type="username" class="form-control" id="username" placeholder="Enter username" name="username"><br>
+            <input type="password" class="form-control" id="password" placeholder="Enter password" name="pswd"><br>
+            <button type="submit" class="btn btn-primary" onclick="logindata()">Submit</button>
+            <div class="text-center">
+                <p>Not a member? <a href="{% url 'create_user' %}">Register</a></p>
+            </div>
+        </div>
+    <!-- </form> -->
+</body>
+<script>
+    function logindata() {
+        var username = document.getElementById("username").value
+        var password = document.getElementById("password").value
+        // console.log(username,password)
+    
+        var login = {
+            "username" : username,
+            "password" : password,
+        }
+        $.ajax({
+            url: "http://127.0.0.1:8000/login/",
+            type: "POST",
+            headers: { "X-CSRFToken": "{{csrf_token}}" },
+            data: login,
+            success: function (login,a,b,textStatus, xhr) {
+                var a = $.parseHTML(login)
+                console.log(a[0]["result_code"]);
+                // alert(textStatus)
+                if (login == "success"){
+                    window.location.href ="http://127.0.0.1:8000/"
+                }
+                // alert(login.error)
+            },
+            statusCode:{
+                200: function(responce){
+                    alert("username or password not match");
+                }
+            },
+            error: function (error) {
+                console.log("error",error);
+            },
+            
+        });
+    }
+</script>
+
 </html>
