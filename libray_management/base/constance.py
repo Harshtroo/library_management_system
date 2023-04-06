@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Role(Enum):
-    Student = 'Student'
+    student = 'student'
     librarian = 'librarian'
 
 

@@ -2,12 +2,13 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views.generic import TemplateView,CreateView
 from .models import User
-from .forms import UserForm
+from .forms import UserForm,AddBook
 from django.contrib.auth.views import LoginView,LogoutView
 from django.views import View
 from django.http import HttpResponse,JsonResponse
 from django.urls import reverse,reverse_lazy
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate,login
+from django.contrib import messages
 
 class Home(TemplateView):
     template_name ="home.html"
@@ -38,12 +39,13 @@ class Login(LoginView):
         # print("username",username," password",password)
         user =  authenticate(username= username, password=password)
         print(user)
-        if not user:
+        if user is not None  and user.is_active:
+            print("inside user",user)
             login(request,user)
-            return JsonResponse({"error":"user not found."})
-        
-            
-        return JsonResponse({"message":"success"})
+            return JsonResponse({"message":"success"})
+        return JsonResponse({"error":"user not found."})
+
+
 
 
         # if request.user.is_authenticated :
@@ -61,11 +63,32 @@ class CreateUser(CreateView):
     def post(self, request, *args, **kwargs):
         '''create user post request'''
         user_form = self.form_class(request.POST or None)
-        # print(user_form)
-        # print(user_form.is_valid())
+
         if user_form.is_valid():
             user = user_form.save(commit=False)
-            print(user)
             user.save()
-        return HttpResponse("success")
-    
+            messages.success(self.request,"successfully register.")
+            return JsonResponse({"message":"success"})
+        
+        # else:
+        #     messages.error(self.request, 'You are already register.')
+        return JsonResponse({"error":"user not found."})
+
+class AddBooks(CreateView):
+    '''add book'''
+    template_name = "add_book.html"
+    form_class =AddBook
+
+    def post(self, request, *args, **kwargs):
+        book_form = self.form_class(request.POST or None)
+        # print(book_form)
+        if book_form.is_valid():
+            # book = book_form.save(commit=False)
+            book_form.save()
+            messages.success(self.request,"successfully Add book.")
+            
+            return JsonResponse({"message":"success"})
+        return JsonResponse({"error":"user not found."})
+
+class SuccessMessage(TemplateView):
+    template_name = 'successpage.html'

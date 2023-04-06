@@ -12,4 +12,10 @@ class User(AbstractUser):
         '''soft delete funcction'''
         self.is_deleted= True
         self.save()
+
+class Book(models.Model):
+    book_name = models.CharField(max_length=200)
+    author_name = models.CharField(max_length=100)
+    price = models.IntegerField()
+    quantity = models.IntegerField(default=0,)
     

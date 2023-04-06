@@ -1,4 +1,6 @@
 {% include 'base.html' %}
+
+<!DOCTYPE html>
 <html>
     <body>
         {% if messages %}
@@ -11,6 +13,11 @@
                     {% endfor %}
             </ul>
         {% endif %}
-        <img src="https://thumbs.dreamstime.com/z/blurred-image-many-old-books-bookshelf-library-81867124.jpg" height="10%" width="100%">
+        <div class="row">
+            <div class="text-lg-right text-center">
+                <p>you have successfully register in system <br> place login hear </p>
+                <a href="{% url 'login' %}">login hear</a>
+            </div>
+        </div>
     </body>
 </html>
