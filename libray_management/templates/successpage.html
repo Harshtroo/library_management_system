@@ -2,22 +2,43 @@
 
 <!DOCTYPE html>
 <html>
-    <body>
+
+<head>
+    <style>
+        .gradient-custom{
+            /* fallback for old browsers */
+            background-color: hwb(187 71% 19%);
+
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: -webkit-linear-gradient(to bottom right, hsl(280, 25%, 60%), hsl(245, 30%, 65%));
+
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: linear-gradient(to bottom right, hsl(197, 34%, 34%), hsl(209, 32%, 44%));
+            /* background-color:aquamarine; */
+        }
+       
+    </style>
+</head>
+
+<body>
+    <div class="gradient-custom">
         {% if messages %}
-            <ul class="alert alert-success" style="list-style-type: none">
-                {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
-                    {{ message }}
-                    </li>
-                    {% endfor %}
-            </ul>
+        <ul class="alert alert-success" style="list-style-type: none">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                {{ message }}
+                </li>
+                {% endfor %}
+        </ul>
         {% endif %}
         <div class="row">
             <div class="text-lg-right text-center">
-                <p>you have successfully register in system <br> place login hear </p>
-                <a href="{% url 'login' %}">login hear</a>
+                <p>you have successfully register in system <br> please login hear </p>
+                <a style="color: black;" href="{% url 'login' %}"><b>login here</b></a>
             </div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

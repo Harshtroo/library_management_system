@@ -11,6 +11,6 @@ urlpatterns = [
     path('create_user/',views.CreateUser.as_view(),name="create_user"),
     path('add_book/',views.AddBooks.as_view(),name="add_book"),
     path('success_register/',views.SuccessMessage.as_view(),name="success_register"),
+    # path('register_user/',views.RegisterUserList.as_view(),name="register_user"),
 
 ]
-

@@ -1,33 +1,46 @@
 {% include 'base.html' %}
 <html>
-    <head>
-        <style>
-            .home-background{
-                height: 100vh;
-                width:100%;
-                overflow: hidden;
-            }
-        .home-background img{
-            height:100vh;
-            width:100%;
-            object-fit:cover;
-            overflow:hidden;
+
+<head>
+    <style>
+        .home-background {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            background: hwb(187 71% 19%);
+
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: -webkit-linear-gradient(to bottom right, hsl(280, 25%, 60%), hsl(245, 30%, 65%));
+
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: linear-gradient(to bottom right, hsl(197, 34%, 34%), hsl(209, 32%, 44%))
+        }
+
+        .home-background img {
+            max-height: 610px;
+            width: 100%;
+            object-fit: cover;
+            overflow: hidden;
+            /* padding: 2%; */
+            overflow-y: auto;
+            position: static;
         }
     </style>
-    </head>
-    <body>
+</head>
+
+<body>
+    <div class="home-background">
         {% if messages %}
-            <ul class="alert alert-success" style="list-style-type: none">
-                {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
-                    {{ message }}
-                    </li>
-                    {% endfor %}
-            </ul>
+        <ul class="alert alert-success" style="list-style-type: none">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}{% endif %}
+                {{ message }}
+                </li>
+                {% endfor %}
+        </ul>
         {% endif %}
-        <div class="home-background">
-        <img src="https://thumbs.dreamstime.com/z/blurred-image-many-old-books-bookshelf-library-81867124.jpg">
-        </div>
-    </body>
+    </div>
+</body>
+
 </html>

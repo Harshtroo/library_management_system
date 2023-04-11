@@ -7,13 +7,13 @@
     <style>
         .gradient-custom {
             /* fallback for old browsers */
-            background: #f093fb;
+            background: hwb(187 71% 19%);
 
             /* Chrome 10-25, Safari 5.1-6 */
-            background: -webkit-linear-gradient(to bottom right, rgba(240, 147, 251, 1), rgba(245, 87, 108, 1));
+            background: -webkit-linear-gradient(to bottom right, hsl(280, 25%, 60%), hsl(245, 30%, 65%));
 
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-            background: linear-gradient(to bottom right, hsl(214, 93%, 78%), rgba(245, 87, 108, 1))
+            background: linear-gradient(to bottom right, hsl(197, 34%, 34%), hsl(209, 32%, 44%))
         }
 
         .card-registration .select-input.form-control[readonly]:not([disabled]) {
@@ -24,6 +24,8 @@
         }
 
         .card-registration .select-arrow {
+            overflow-y: hidden;
+            max-height: 400px;
             top: 13px;
         }
     </style>
@@ -31,26 +33,26 @@
 
 <body>
     {% if messages %}
-            <ul class="alert alert-success" style="list-style-type: none">
-                {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
-                    {{ message }}
-                    </li>
-                    {% endfor %}
-            </ul>
-        {% endif %}
+    <ul class="alert alert-success" style="list-style-type: none">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+            {{ message }}
+            </li>
+            {% endfor %}
+    </ul>
+    {% endif %}
     <section class="vh-100 gradient-custom">
         <div class="container py-5 h-100">
             <div class="row justify-content-center align-items-center h-100">
                 <div class="col-12 col-lg-9 col-xl-7">
                     <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
                         <div class="card-body p-4 p-md-5">
-                            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Add Book</h3>
+                            <h3 class="mb-4 pb-2 pb-md-0 mb-md-4">Add Book</h3>
                             <form>
 
                                 <div class="row">
-                                    <div class="col-md-6 mb-4">
+                                    <div class="col-md-6 mb-3">
                                         <div class="form-outline">
                                             <label class="form-label" for="bookname">Book Name</label>
                                             <input type="text" id="bookname" class="form-control form-control-lg" />
@@ -59,7 +61,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6 mb-4">
+                                    <div class="col-md-6 mb-3">
 
                                         <div class="form-outline">
                                             <label class="form-label" for="authorname">Author Name</label>
@@ -68,7 +70,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6 mb-4">
+                                    <div class="col-md-6 mb-3">
 
                                         <div class="form-outline">
                                             <label class="form-label" for="price">Price</label>
@@ -77,7 +79,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6 mb-4">
+                                    <div class="col-md-6 mb-2">
 
                                         <div class="form-outline">
                                             <label class="form-label" for="quantity">Quantity</label>
@@ -86,7 +88,7 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-4 pt-2">
+                                <div class="mt-4 pt-2 mb-2">
                                     <input class="btn btn-primary btn-lg" type="button" value="Submit"
                                         onclick="bookdata()" />
                                 </div>
@@ -101,16 +103,16 @@
 <script>
     function bookdata() {
         var bookname = document.getElementById("bookname").value
-        var authorname  = document.getElementById("authorname").value
+        var authorname = document.getElementById("authorname").value
         var price = document.getElementById("price").value
-        var quantity =document.getElementById("quantity").value
+        var quantity = document.getElementById("quantity").value
         // console.log(bookname,authorname,price)
 
         var data = {
-            "book_name":bookname,
-            "author_name":authorname,
-            "price":price,
-            "quantity":quantity,
+            "book_name": bookname,
+            "author_name": authorname,
+            "price": price,
+            "quantity": quantity,
         }
         console.log(data);
         $.ajax({

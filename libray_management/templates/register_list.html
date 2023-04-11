@@ -1,0 +1,41 @@
+{% include 'base.html' %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+    <table class="table" align="center" border="1">
+
+        <thead class="table-dark">
+            <tr>
+                <!-- <th scope="col"></th> -->
+                <th scope="col">First name</th>
+                <th scope="col">Last name</th>
+                <th scope="col">User name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+            </tr>
+
+        </thead>
+        <tbody id="userdata">
+            {% for user_field in User %}
+            <tr>
+                <td>{{user_field.username}}</td>
+                <td>{{user_field.first_name}}</td>
+                <td>{{user_field.last_name}}</td>
+                <td>{{user_field.email}}</td>
+                <td>{{user_field.role}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+<script>
+    var data = document.getElementById("userdata").value
+    console.log(data);
+</script>
+
+</html>

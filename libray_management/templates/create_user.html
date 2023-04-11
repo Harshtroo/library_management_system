@@ -13,6 +13,7 @@
 
             /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
             background: linear-gradient(to bottom right, hsl(197, 34%, 34%), hsl(209, 32%, 44%))
+            
         }
 
         .card-registration .select-input.form-control[readonly]:not([disabled]) {
@@ -23,6 +24,8 @@
         }
 
         .card-registration .select-arrow {
+            overflow-y: hidden;
+            max-height: 400px;
             top: 13px;
         }
         
@@ -35,7 +38,7 @@
             <ul class="alert alert-success" style="list-style-type: none">
                 {% for message in messages %}
                 <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}{% endif %}
                     {{ message }}
                     </li>
                     {% endfor %}
@@ -55,9 +58,6 @@
                                 <div class="row">
                                     <div class="col-xs-12 covered">
                                       <div class="covered-img"></div>
-                                  
-                                      <p>Placeholder Text
-                                        <p>
                                     </div>
                                   </div>
 

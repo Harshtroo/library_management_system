@@ -2,21 +2,39 @@
 
 <!DOCTYPE html>
 <html>
+  <head>
+    <style>
+      .background{
+        background: hwb(187 71% 19%);
+
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: -webkit-linear-gradient(to bottom right, hsl(280, 25%, 60%), hsl(245, 30%, 65%));
+
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: linear-gradient(to bottom right, hsl(197, 34%, 34%), hsl(209, 32%, 44%))
+            
+      }
+    </style>
+  </head>
 
 <body>
     <!-- <form method="POST"> -->
     {% csrf_token %}
-    {% if messages %}
+    
+    <section class="vh-100 background" style="background-color: #9A616D;">
+      {% if messages %}
             <ul class="alert alert-success" style="list-style-type: none">
                 {% for message in messages %}
                 <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
-                    {{ message }}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}{% endif %}
+                    <!-- {{ message }} -->
                     </li>
                     {% endfor %}
             </ul>
-        {% endif %}
-    <section class="vh-100" style="background-color: #9A616D;">
+    {% endif %}
+    <div id="error">
+      {{ message }}
+    </div>
         <div class="container py-5 h-100">
           <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col col-xl-10">
@@ -26,6 +44,7 @@
                     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img1.webp"
                       alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
                   </div>
+                  
                   <div class="col-md-6 col-lg-7 d-flex align-items-center">
                     <div class="card-body p-4 p-lg-5 text-black">
       
@@ -52,11 +71,10 @@
                           <button class="btn btn-dark btn-lg btn-block" type="button" onclick="logindata()">Login</button>
                         </div>
       
-                        <a class="small text-muted" href="#!">Forgot password?</a>
+                        
                         <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="{% url 'create_user' %}"
                             style="color: #393f81;">Register here</a></p>
-                        <a href="#!" class="small text-muted">Terms of use.</a>
-                        <a href="#!" class="small text-muted">Privacy policy</a>
+                        
                       </form>
       
                     </div>
@@ -91,8 +109,14 @@
                     window.location.href = "{% url 'home'%}"
                 }
             },
-            error: function (error) {
-                console.log("error", error);
+            error: function (data) {
+                // console.log(data)
+                if(data.message == "error"){
+                
+                document.getElementById("error").innerHTML = error.message
+                console.log("error?????????", error.message);
+                }
+                
             },
 
         });
