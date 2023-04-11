@@ -5,14 +5,8 @@
   <head>
     <style>
       .background{
-        background: hwb(187 71% 19%);
+        background:#468170;
 
-            /* Chrome 10-25, Safari 5.1-6 */
-            background: -webkit-linear-gradient(to bottom right, hsl(280, 25%, 60%), hsl(245, 30%, 65%));
-
-            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-            background: linear-gradient(to bottom right, hsl(197, 34%, 34%), hsl(209, 32%, 44%))
-            
       }
     </style>
   </head>
@@ -21,7 +15,7 @@
     <!-- <form method="POST"> -->
     {% csrf_token %}
     
-    <section class="vh-100 background" style="background-color: #9A616D;">
+    <section class="vh-100 background">
       {% if messages %}
             <ul class="alert alert-success" style="list-style-type: none">
                 {% for message in messages %}
