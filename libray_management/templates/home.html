@@ -7,6 +7,7 @@
             height: 100vh;
             width: 100%;
             overflow: hidden;
+<<<<<<< HEAD
             background: hwb(187 71% 19%);
 
             /* Chrome 10-25, Safari 5.1-6 */
@@ -24,11 +25,16 @@
             /* padding: 2%; */
             overflow-y: auto;
             position: static;
+=======
+            background-color: rgb(89, 143, 102);
+>>>>>>> 72212a0085963e707bb9663d233021dd2ee2a82c
         }
+
     </style>
 </head>
 
 <body>
+<<<<<<< HEAD
     <div class="home-background">
         {% if messages %}
         <ul class="alert alert-success" style="list-style-type: none">
@@ -40,6 +46,20 @@
                 {% endfor %}
         </ul>
         {% endif %}
+=======
+    {% if messages %}
+    <ul class="alert alert-success" style="list-style-type: none">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+            {{ message }}
+            </li>
+            {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="home-background">
+        
+>>>>>>> 72212a0085963e707bb9663d233021dd2ee2a82c
     </div>
 </body>
 
