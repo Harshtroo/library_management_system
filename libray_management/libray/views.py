@@ -86,7 +86,7 @@ class AddBooks(CreateView):
             # book = book_form.save(commit=False)
             book_form.save()
             messages.success(self.request,"successfully Add book.")
-            
+
             return JsonResponse({"message":"success"})
         return JsonResponse({"error":"user not found."})
 
