@@ -25,9 +25,9 @@
       {% if messages %}
             <ul class="alert alert-success" style="list-style-type: none">
                 {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
                     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}{% endif %}
-                    <!-- {{ message }} -->
+                  {{ message }}
                     </li>
                     {% endfor %}
             </ul>
@@ -110,7 +110,7 @@
                 }
             },
             error: function (data) {
-                // console.log(data)
+                // console.log(data.message)
                 if(data.message == "error"){
                 
                 document.getElementById("error").innerHTML = error.message
