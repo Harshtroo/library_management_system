@@ -22,8 +22,7 @@ class UserForm(forms.ModelForm):
 class AddBook(forms.ModelForm):
     class Meta:
         model = Book
-        fields = ["book_name","author_name","price","quantity"]
+        fields = ["book_image","book_name","author_name","price","quantity"]
     
     def save(self, *args, **kwargs):
-        # self.slug = slugify(self.title)
         super(AddBook, self).save(*args, **kwargs)

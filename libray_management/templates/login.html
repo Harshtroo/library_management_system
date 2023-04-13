@@ -21,6 +21,7 @@
                 {% for message in messages %}
                 <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
                     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}{% endif %}
+                    
                   {{ message }}
                     </li>
                     {% endfor %}
@@ -97,19 +98,19 @@
             data: data,
             success: function (data) {
                 // var a = $.parseHTML(data)
-                console.log(data);
+                // console.log(data);
                 // alert(textStatus)    
                 if (data.message == "success") {
                     window.location.href = "{% url 'home'%}"
                 }
             },
-            error: function (data) {
-                // console.log(data.message)
-                if(data.message == "error"){
+            error: function (data,a,b) {
+          
+                console.log(a)
+                console.log(b)
+                console.log(data.responseJSON.message)
+                document.getElementById("error").innerHTML = data.responseJSON.message
                 
-                document.getElementById("error").innerHTML = error.message
-                console.log("error?????????", error.message);
-                }
                 
             },
 

@@ -27,14 +27,13 @@ class Login(LoginView):
         user =  authenticate(username= username, password=password)
         # print(user)
         if user is not None:
-            # print("inside user",user)
             login(request,user)
             messages.success(self.request,"successfully login")
             return JsonResponse({"message":"success"})
-        
+
         elif user is None:
-            messages.error(self.request,"username and password not match.")
-            return JsonResponse({"message":"error"})
+            # messages.error(self.request,"username and password not match.")
+            return JsonResponse({"message":"username and password not match."},status=400)
 
 class Logout(LogoutView):
     '''logout class'''
@@ -57,7 +56,6 @@ class CreateUser(CreateView):
             messages.success(self.request,"successfully register.")
             return JsonResponse({"message":"success"})
         messages.error(self.request,"username is already registered.")
-        
         return JsonResponse({"error":"user not found."})
 
 class AddBooks(LoginRequiredMixin,MyCustomPermissions,CreateView):
@@ -70,16 +68,17 @@ class AddBooks(LoginRequiredMixin,MyCustomPermissions,CreateView):
     }
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
         book_form = self.form_class(request.POST or None)
         # print(book_form)
         if book_form.is_valid():
+            # print("vlnfdb")
             # book = book_form.save(commit=False)
-            book_form.save()
+            book_form.save(commit=False)
             messages.success(self.request,"successfully Add book.")
-
             return JsonResponse({"message":"success"})
-        print("fnvdvdfvb")
-        messages.error(self.request,"You are not authoricesd.")
+        # print("fnvdvdfvb")
+        # messages.error(self.request,"You are not authoricesd.")
         return JsonResponse({"error":"user not found."})
 
 class SuccessMessage(TemplateView):

@@ -45,7 +45,7 @@
                     <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
                         <div class="card-body p-4 p-md-5">
                             <h3 class="mb-4 pb-2 pb-md-0 mb-md-4">Add Book</h3>
-                            <form>
+                            <form action="" enctype="multipart/form-data">
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
@@ -79,7 +79,17 @@
 
                                         <div class="form-outline">
                                             <label class="form-label" for="quantity">Quantity</label>
-                                            <input type="text" id="quantity" class="form-control form-control-lg" />
+                                            <input type="number" id="quantity" class="form-control form-control-lg" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+
+                                        <div class="form-outline">
+                                            <label class="form-label" for="image">Book Image</label>
+                                            <input type="file" id="image" accept="image/*" class="form-control form-control-lg" />
                                         </div>
                                     </div>
                                 </div>
@@ -102,22 +112,25 @@
         var authorname = document.getElementById("authorname").value
         var price = document.getElementById("price").value
         var quantity = document.getElementById("quantity").value
-        // console.log(bookname,authorname,price)
+        var bookimage = document.getElementById("image").value
+        
+        // console.log(bookimage);
 
         var data = {
             "book_name": bookname,
             "author_name": authorname,
             "price": price,
             "quantity": quantity,
+            "book_image":bookimage,
         }
         console.log(data);
         $.ajax({
             url: "{% url 'add_book' %}",
-            type: "POST",
+            method: "POST",
             headers: { "X-CSRFToken": "{{csrf_token}}" },
             data: data,
             success: function (data) {
-                console.log(data);
+                // console.log(data);
                 if (data.message == "success") {
                     window.location.href = "{% url 'home' %}"
                     // alert("successfully register.")
