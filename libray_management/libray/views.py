@@ -28,12 +28,10 @@ class Login(LoginView):
         # print(user)
         if user is not None:
             login(request,user)
-            messages.success(self.request,"successfully login")
+            # messages.success(self.request,"successfully login")
             return JsonResponse({"message":"success"})
-
-        elif user is None:
-            # messages.error(self.request,"username and password not match.")
-            return JsonResponse({"message":"username and password not match."},status=400)
+        
+        return JsonResponse({"message":"username and password not match."},status=400)
 
 class Logout(LogoutView):
     '''logout class'''
@@ -55,8 +53,9 @@ class CreateUser(CreateView):
             user.groups.add(group.id)
             messages.success(self.request,"successfully register.")
             return JsonResponse({"message":"success"})
-        messages.error(self.request,"username is already registered.")
-        return JsonResponse({"error":"user not found."})
+        # messages.error(self.request,"username is already registered.")
+        return JsonResponse({"message":user_form.errors},status=400)
+
 
 class AddBooks(LoginRequiredMixin,MyCustomPermissions,CreateView):
     '''add book'''
@@ -68,28 +67,17 @@ class AddBooks(LoginRequiredMixin,MyCustomPermissions,CreateView):
     }
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
-        book_form = self.form_class(request.POST or None)
-        # print(book_form)
+        book_form = self.form_class(request.POST,request.FILES)
         if book_form.is_valid():
-            # print("vlnfdb")
-            # book = book_form.save(commit=False)
-            book_form.save(commit=False)
-            messages.success(self.request,"successfully Add book.")
+            book_form.save()
+            messages.success(request,"successfully add book.")
             return JsonResponse({"message":"success"})
-        # print("fnvdvdfvb")
-        # messages.error(self.request,"You are not authoricesd.")
-        return JsonResponse({"error":"user not found."})
+        return JsonResponse({"message":book_form.errors},status=400)
+
 
 class SuccessMessage(TemplateView):
+    """
+    
+    """
     template_name = 'successpage.html'
 
-# class RegisterUserList(ListView):
-#     model = User
-#     template_name = 'register_list.html'
-
-#     def post(self,request,*args,**kwargs):
-#         user_list = User.objects.all()
-#         print(user_list)
-#         messages.error(request=self.request, message="You are not authoricesd.")
-#         return JsonResponse({"message":"success"})

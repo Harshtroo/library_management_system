@@ -7,10 +7,13 @@ class UserForm(forms.ModelForm):
     '''user forms'''
     # password = forms.CharField(widget=forms.PasswordInput())
     # role =
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
     class Meta:
         '''userform meta class'''
         model = User
         fields = ["first_name","last_name","email","username","role"]
+    
 
     def save(self, commit=False):
         instance = super().save(commit=True)
@@ -23,6 +26,5 @@ class AddBook(forms.ModelForm):
     class Meta:
         model = Book
         fields = ["book_image","book_name","author_name","price","quantity"]
+
     
-    def save(self, *args, **kwargs):
-        super(AddBook, self).save(*args, **kwargs)

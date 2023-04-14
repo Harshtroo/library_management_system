@@ -21,15 +21,16 @@
                 {% for message in messages %}
                 <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
                     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}{% endif %}
-                    
+                    <div div class="error">
                   {{ message }}
+                </div>
                     </li>
                     {% endfor %}
             </ul>
     {% endif %}
-    <div id="error">
+    <!-- <div id="error">
       {{ message }}
-    </div>
+    </div> -->
         <div class="container py-5 h-100">
           <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col col-xl-10">
