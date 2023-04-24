@@ -1,5 +1,5 @@
 {% include 'base.html' %}
-
+{% load widget_tweaks %}  
 <!DOCTYPE html>
 <html>
 
@@ -44,26 +44,41 @@
         <div class="container py-5 h-100">
             <div class="row justify-content-center align-items-center h-100">
                 <div class="col-12 col-lg-9 col-xl-7">
-                    <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                    <div class="card shadow-2-strong card-registration d-flex justify-content-center align-items-center" style="border-radius: 15px;">
                         <div class="card-body p-4 p-md-5">
                             <h3 class="mb-4 pb-2 pb-md-0 mb-md-4">Add Book</h3>
-
                             <form method="POST" action="" enctype="multipart/form-data" id="addbook">
                                 <div class="row">
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-12">
                                         <div class="form-outline form-label">
-                                            <!-- <div class="form-control form-control-lg"> -->
-                                                {% csrf_token %}
-                                                {{form.as_p}}
-                                                <p id="email_error" style="color: red;"></p>
+                                            {% csrf_token %}
+                                            <div id="output">
+                                            </div>
+                                            <!-- <div class="form-group"> -->
+                                            {% render_field form.book_image class="form-control" placeholder=form.book_image.label %}
+                                            <p id="image_error" style="color: red;"></p><br>
+                                        <!-- </div> -->
+                                            <label>Book Name</label>
+                                            {% render_field form.book_name class="form-control" placeholder=form.book_name.label %}
+                                            <p id="bookname_error" style="color: red;"></p><br>
+                                            
+                                            <label>Author Name</label>
+                                            {% render_field form.author_name class="form-control" placeholder=form.author_name.label %}
+                                            <p id="authorname_error" style="color: red;"></p><br>
+                                           
+                                            <label>Price</label>
+                                            {% render_field form.price class="form-control" placeholder=form.price.label %}
+                                            <p id="price_error" style="color: red;"></p><br>
+                                            
+                                            <label>Quantity</label>
+                                            {% render_field form.quantity class="form-control" placeholder=form.quantity.label %}<br>
+                                            <br>
+                                            <!-- <div class="mt-4 pt-2 mb-2"> -->
+                                                <input class="btn btn-primary btn-lg" type="button" value="Submit"
+                                                    onclick="bookdata()" />
                                             <!-- </div> -->
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="mt-4 pt-2 mb-2">
-                                    <input class="btn btn-primary btn-lg" type="button" value="Submit"
-                                        onclick="bookdata()" />
                                 </div>
                             </form>
                         </div>
@@ -74,12 +89,40 @@
     </section>
 </body>
 <script>
+    // var imsge_tag = document.getElementById("id_book_image").append(preview())
+
+    // function preview() {
+    //     $('#showimage').attr('src', URL.createObjectURL(event.target.files[0]))
+    // }
+    let imagesArray = []
+    var bookimage = document.getElementById("id_book_image")
+    bookimage.addEventListener("change", () => {
+        const file = bookimage.files
+        console.log(file[0]);
+        imagesArray.push(file[0])
+        displayImages()
+    })
+    function displayImages() {
+        let images = ""
+        imagesArray.forEach((image, index) => {
+            images += `<div class="image">
+                <img src="${URL.createObjectURL(image)}" alt="image">
+                <span onclick="deleteImage(${index})">&times;</span>
+              </div>`
+        })
+        document.getElementById("output").innerHTML = images
+    }
+
+
     function bookdata() {
         var bookname = document.getElementById("id_book_name").value
         var authorname = document.getElementById("id_author_name").value
         var price = document.getElementById("id_price").value
         var quantity = document.getElementById("id_quantity").value
-        var bookimage = document.getElementById("id_book_image").value
+        var bookimage = document.getElementById("id_book_image").files
+        console.log(bookimage);
+
+
 
 
         var data = {
@@ -89,7 +132,7 @@
             "quantity": quantity,
             "book_image": bookimage,
         }
-        // console.log(data);
+        console.log(data);
 
         var data = new FormData($('#addbook').get(0))
 
@@ -110,13 +153,18 @@
             },
             error: function (data, error) {
                 // alert("your id is already register")
-                // console.log(data.responseJSON.message.book_name[0]);
-                document.getElementById("id_book_name").innerHTML += data.responseJSON.message.book_name[0]
+                console.log(data.responseJSON.message.book_image[0]);
+                document.getElementById("image_error").innerHTML = data.responseJSON.message.book_image[0]
+                document.getElementById("bookname_error").innerHTML = data.responseJSON.message.book_name[0]
+                document.getElementById("authorname_error").innerHTML = data.responseJSON.message.author_name[0]
+                document.getElementById("price_error").innerHTML = data.responseJSON.message.price[0]
+               
                 // console.log("error", error);
             },
         })
 
     }
+
 </script>
 
 </html>

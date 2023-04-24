@@ -161,13 +161,11 @@
                 }
             },
             error: function (data, error) {
-                // console.log(data.responseJSON.message.last_name[0]);
+                console.log(data.responseJSON.message.username[0]);
                 document.getElementById("firstname_error").innerHTML += data.responseJSON.message.first_name[0]
                 document.getElementById("lastname_error").innerHTML += data.responseJSON.message.last_name[0]
                 document.getElementById("email_error").innerHTML += data.responseJSON.message.email[0]
                 document.getElementById("username_error").innerHTML += data.responseJSON.message.username[0]
-
-
 
             },
 

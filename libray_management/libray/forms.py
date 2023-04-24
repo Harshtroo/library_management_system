@@ -23,6 +23,7 @@ class UserForm(forms.ModelForm):
         return instance
 
 class AddBook(forms.ModelForm):
+    
     class Meta:
         model = Book
         fields = ["book_image","book_name","author_name","price","quantity"]

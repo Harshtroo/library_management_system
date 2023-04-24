@@ -16,7 +16,8 @@ class User(AbstractUser):
 
 
 class Book(models.Model):
-    book_image = models.ImageField(upload_to='media/images/',max_length=100)
+    book_image = models.ImageField(upload_to='books/',max_length=100)
+    # show_image = models.ImageField(null=True)
     book_name = models.CharField(max_length=200)
     author_name = models.CharField(max_length=100)
     price = models.IntegerField()

@@ -13,8 +13,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixin import MyCustomPermissions
 from django.contrib.auth.models import Group, User, Permission
 
+
 class Home(TemplateView):
     template_name ="home.html"
+
 
 class Login(LoginView):
     '''login class '''
@@ -30,12 +32,13 @@ class Login(LoginView):
             login(request,user)
             # messages.success(self.request,"successfully login")
             return JsonResponse({"message":"success"})
-        
+
         return JsonResponse({"message":"username and password not match."},status=400)
 
 class Logout(LogoutView):
     '''logout class'''
     pass
+
 
 class CreateUser(CreateView):
     template_name = "create_user.html"
