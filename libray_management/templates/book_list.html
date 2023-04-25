@@ -40,22 +40,37 @@
 
     </div>
     <script>
-    window.onload =function() {
-    $.ajax({
-        url: "{% url 'book_list' %}",
-        type: "GET",
+        $('btn-book-list').on('click',function(){
+            $.ajax({
+                url:"{% url 'book_list' %}",
+                type:"GET",
+                dataType:"json",
+                success: function(resp){
+                    $(".btn-book-list").html(resp)
+                    console.log("asvasvc")
+                }
+            })
+        })
+
+
+
+
+    //window.onload =function() {
+    //$.ajax({
+       // url: "{% url 'book_list' %}",
+        //type: "GET",
         // data:"",
         // headers: { "X-CSRFToken": "{{csrf_token}}" },
-        success: function bookList(book) {
-            console.log(book.book_name )
+        //success: function bookList(book) {
+          //  console.log(book.book_name )
             // if (da == "success") {
             //     console.log("neujfb")
             // }
             // var book = responce.book
             // console.log(book);
-        }
-    })
-}
+      //  }
+    //})
+//}
 
     </script>
 </body>

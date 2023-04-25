@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixin import MyCustomPermissions
 from django.contrib.auth.models import Group, User, Permission
-
+from django.core import serializers
 
 class Home(TemplateView):
     template_name ="home.html"
@@ -91,6 +91,12 @@ class BookList(ListView):
     template_name = 'book_list.html'
     book = Book.objects.all()
 
+    def get(self,request,*args,**kwargs):
+        if request.is_ajax():
+            book = Book.objects.all()
+            book_serializer = serializers.serialize("json", book)
+            return JsonResponse(book_serializer,safe=False)
+        return JsonResponse({"message":"wrong validation"})     
     # def get(self,request,*args,**kwargs):
     #     result = dict()
     #     data_list = []
