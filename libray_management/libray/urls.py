@@ -13,9 +13,6 @@ urlpatterns = [
     path('create_user/',views.CreateUser.as_view(),name="create_user"),
     path('add_book/',views.AddBooks.as_view(),name="add_book"),
     path('success_register/',views.SuccessMessage.as_view(),name="success_register"),
-    # path('register_user/',views.RegisterUserList.as_view(),name="register_user"),
-
+    path('book_list/',views.BookList.as_view(),name="book_list"),
 ]
 
-# if settings.DEBUG:
-#         urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)  

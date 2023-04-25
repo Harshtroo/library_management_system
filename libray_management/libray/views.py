@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views.generic import TemplateView,CreateView,ListView
-from .models import User
+from .models import User,Book
 from .forms import UserForm,AddBook
 from django.contrib.auth.views import LoginView,LogoutView
 from django.views import View
@@ -84,3 +84,26 @@ class SuccessMessage(TemplateView):
     """
     template_name = 'successpage.html'
 
+
+class BookList(ListView):
+    login_url = 'login'
+    model = Book
+    template_name = 'book_list.html'
+    book = Book.objects.all()
+
+    # def get(self,request,*args,**kwargs):
+    #     result = dict()
+    #     data_list = []
+    #     result['status']="success"
+    #     for books in Book.objects.all():
+    #         book_list = {"id":books.id,"book_name":books.book_name,"author_name":books.author_name}
+    #         # print("book list",book_list)
+    #         data_list.append(book_list)
+    #     result['data'] = data_list
+    #     return JsonResponse({"message":data_list})
+    
+    
+    # breakpoint()
+    # def post(self,request,*args,**kwargs):
+    #     print("fbubugvb",request.POST)
+    #     return super().post(request, *args, **kwargs)

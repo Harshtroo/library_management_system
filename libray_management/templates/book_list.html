@@ -1,0 +1,64 @@
+{% include 'base.html' %}
+<!-- {% load static %} -->
+
+
+<head>
+    <style>
+        .home-background {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            background: #468170;
+
+        }
+    </style>
+    
+</head>
+
+<body>
+    <div class="home-background">
+        <p id="hello"></p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Id </th>
+                    <th scope="col">Book Name</th>
+                    <th scope="col">Author Name</th>
+                    <!-- <th scope="col">Handle</th> -->
+                </tr>
+            </thead>
+            <tbody id="booklist">
+                <!-- {% for book_items in book%}
+                <tr>
+                    <td>{{book_items.id}}</td>
+                    <td>{{book_items.id_book_name}}</td>
+                    <td>{{book_items.id_author_name}}</td>
+                </tr>
+                {% endfor %} -->
+            </tbody>
+        </table>
+
+    </div>
+    <script>
+    window.onload =function() {
+    $.ajax({
+        url: "{% url 'book_list' %}",
+        type: "GET",
+        // data:"",
+        // headers: { "X-CSRFToken": "{{csrf_token}}" },
+        success: function bookList(book) {
+            console.log(book.book_name )
+            // if (da == "success") {
+            //     console.log("neujfb")
+            // }
+            // var book = responce.book
+            // console.log(book);
+        }
+    })
+}
+
+    </script>
+</body>
+
+
+</html>
