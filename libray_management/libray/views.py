@@ -13,6 +13,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixin import MyCustomPermissions
 from django.contrib.auth.models import Group, User, Permission
 from django.core import serializers
+from django.conf import settings
+
 
 class Home(TemplateView):
     template_name ="home.html"
@@ -89,27 +91,35 @@ class BookList(ListView):
     login_url = 'login'
     model = Book
     template_name = 'book_list.html'
-    book = Book.objects.all()
 
     def get(self,request,*args,**kwargs):
-        if request.is_ajax():
-            book = Book.objects.all()
-            book_serializer = serializers.serialize("json", book)
-            return JsonResponse(book_serializer,safe=False)
-        return JsonResponse({"message":"wrong validation"})     
-    # def get(self,request,*args,**kwargs):
-    #     result = dict()
-    #     data_list = []
-    #     result['status']="success"
-    #     for books in Book.objects.all():
-    #         book_list = {"id":books.id,"book_name":books.book_name,"author_name":books.author_name}
-    #         # print("book list",book_list)
-    #         data_list.append(book_list)
-    #     result['data'] = data_list
-    #     return JsonResponse({"message":data_list})
+        if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+            result = dict()
+            data_list = []
+            result['status']="success"
+            for books in Book.objects.all():
+                book_list = {"id":books.id,"book_name":books.book_name,"author_name":books.author_name}
+                # print("book list",book_list)
+                data_list.append(book_list)
+            result['data'] = data_list
+
+            return JsonResponse(data_list,safe=False)
+        return render(request, 'book_list.html')
+
+
+class AssignBook(ListView):
+    model = User
+    template_name = "assign_book.html"
     
-    
-    # breakpoint()
-    # def post(self,request,*args,**kwargs):
-    #     print("fbubugvb",request.POST)
-    #     return super().post(request, *args, **kwargs)
+    def get(self,request,*args,**kwargs):
+        if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+            result = dict()
+            user_list = []
+            result['status']="success"
+            for users in User.objects.all():
+                user_list.append(users)
+            result['data'] = user_list
+            # user = settings.AUTH_USER_MODEL
+                
+            return JsonResponse(user_list,safe=False)
+        return render(request,'assign_book.html')    

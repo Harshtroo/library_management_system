@@ -1,5 +1,5 @@
 {% include 'base.html' %}
-<!-- {% load static %} -->
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +17,13 @@
             background: #468170;
             padding-left: 2%;
             padding-right: 3%;
+            /* background-color:linear-gradient(to right, #93f7e4, #ACB6E5);  */
+            /* background-color:hsl(255, 58%, 84%); */
+            /* background: linear-gradient(to right, #2980b9, #2c3e50); */
         }
+        /* .table{
+            background: linear-gradient(to right, #2980b9, #2c3e50); 
+        } */
         .table-col{
             background:white;
             border-radius: 10px;
@@ -25,7 +31,6 @@
         }
     </style>
 </head>
-
 <body>
     <div class="home-background">
         <table class="table table-col">
@@ -34,40 +39,39 @@
                    
                     <tr>
                         <th scope="col">Id </th>
-                        <th scope="col">Book Name</th>
-                        <th scope="col">Author Name</th>
+                        <th scope="col">User Name</th>
+                        <th scope="col">Email</th>
                         <th id="button"></th>
                     </tr>
                 </thead>
-                <tbody id="listbook">
+                <tbody id="listuser">
                 </tbody>
             </div>
         </table>
 
     </div>
+
     <script>
         $.ajax({
-            url: "{% url 'book_list' %}",
+            url: "{% url 'assign_book' %}",
             method: "GET",
             headers: { "X-CSRFToken": "{{csrf_token}}" },
-            success: function bookList(book) {
-                output = ""
-                for (i = 0; i < book.length; i++) {
-                    output += `<tr><td>${book[i].id}</td><td>${book[i].book_name}</td><td>${book[i].author_name}</td>
-                        <td><button type="button" onclick= "assignBook()" >Assign Book</button></td></tr>`
-                }
-                document.getElementById("listbook").innerHTML = output
+            success: function userList(user) {
+                console.log(user);
+                // output = ""
+                // for (i = 0; i < book.length; i++) {
+                //     output += `<tr><td>${book[i].id}</td><td>${book[i].book_name}</td><td>${book[i].author_name}</td>
+                //         <td><button type="button" onclick= "assignBook()" >Assign Book</button></td></tr>`
+                // }
+                // document.getElementById("listbook").innerHTML = output
                 
             }
         })
 
-        function assignBook(){
-            console.log("dncvsd")
-            window.location= "{% url 'assign_book' %}"
-        }
+        // function assignBook(){
+        //     console.log("dncvsd")
+        //     window.location= "{% url 'assign_book' %}"
+        // }
 
     </script>
-
 </body>
-
-</html>
