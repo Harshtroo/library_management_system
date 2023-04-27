@@ -17,53 +17,76 @@
             background: #468170;
             padding-left: 2%;
             padding-right: 3%;
+            padding-top: 2%;
         }
-        .table-col{
-            background:white;
+
+        .table-col {
+            background: white;
             border-radius: 10px;
-            box-shadow: 0 0 0 5px rgba(0,0,0,0.05),0 0 0 10px rgba(0,0,0,0.05)
+            box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.05), 0 0 0 10px rgba(0, 0, 0, 0.05)
+        }
+
+        .thead {
+            background-color: #FFED86;
+        }
+
+        .card-body {
+            text-align: center;
+            align-self: center;
         }
     </style>
 </head>
 
 <body>
-    <div class="home-background">
-        <table class="table table-col">
-            <div class="container table">
-                <thead>
-                   
-                    <tr>
-                        <th scope="col">Id </th>
-                        <th scope="col">Book Name</th>
-                        <th scope="col">Author Name</th>
-                        <th id="button"></th>
-                    </tr>
-                </thead>
-                <tbody id="listbook">
-                </tbody>
-            </div>
-        </table>
+    
 
-    </div>
+        
+        <div class="home-background">
+        <div class="row" id="bookcard">
+        </div>
+        </div>
+    
     <script>
+        function trunString(string,words=17){
+            console.log(string);
+            return string.slice(0,words) + (string.length>words ? "...":"")
+                
+        }
+        function showAllString(string){
+            return string
+        }
+        // console.log(string)
         $.ajax({
             url: "{% url 'book_list' %}",
             method: "GET",
             headers: { "X-CSRFToken": "{{csrf_token}}" },
             success: function bookList(book) {
+                // console.log(book);
+
                 output = ""
                 for (i = 0; i < book.length; i++) {
-                    output += `<tr><td>${book[i].id}</td><td>${book[i].book_name}</td><td>${book[i].author_name}</td>
-                        <td><button type="button" onclick= "assignBook()" >Assign Book</button></td></tr>`
+                    output += ` 
+                               <div class="col-3">
+                                <div class="card w-80 h-80 mx-auto">
+                                <img src="${book[i].book_image}" style="height:200px;max-width:100px align:center">
+                                <div class="card-body">
+                                    <p class="card-title" id="book name"><b>${trunString(book[i].book_name)}</b></p>
+                                    <a href="{% url 'assign_book'%}" class="btn btn-primary">Assign Book</a><br>
+                                    <p style="margin-left:225px">Author Name:<br>${trunString(book[i].author_name,5)}</p>
+                                    <p style="margin-right:209px " >Total Quantity:${book[i].quantity}</p>
+                                    <p style="margin-right:189px">Available Quantity:</p>
+                                </div>
+                                </div>
+                                </div>`
                 }
-                document.getElementById("listbook").innerHTML = output
-                
+                document.getElementById("bookcard").innerHTML = output
+
             }
         })
 
-        function assignBook(){
+        function assignBook() {
             console.log("dncvsd")
-            window.location= "{% url 'assign_book' %}"
+            window.location = "{% url 'assign_book' %}"
         }
 
     </script>

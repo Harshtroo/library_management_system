@@ -14,7 +14,7 @@ from .mixin import MyCustomPermissions
 from django.contrib.auth.models import Group, User, Permission
 from django.core import serializers
 from django.conf import settings
-
+# import json
 
 class Home(TemplateView):
     template_name ="home.html"
@@ -98,11 +98,16 @@ class BookList(ListView):
             data_list = []
             result['status']="success"
             for books in Book.objects.all():
-                book_list = {"id":books.id,"book_name":books.book_name,"author_name":books.author_name}
-                # print("book list",book_list)
+                # print("book=========",books.book_image)
+                book_list ={
+                    'id':'id',
+                    'book_image': books.book_image.url ,
+                    'book_name': books.book_name,
+                    'author_name': books.author_name,
+                    'quantity':books.quantity
+                }
                 data_list.append(book_list)
             result['data'] = data_list
-
             return JsonResponse(data_list,safe=False)
         return render(request, 'book_list.html')
 
@@ -112,14 +117,18 @@ class AssignBook(ListView):
     template_name = "assign_book.html"
     
     def get(self,request,*args,**kwargs):
-        if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-            result = dict()
-            user_list = []
-            result['status']="success"
-            for users in User.objects.all():
-                user_list.append(users)
-            result['data'] = user_list
-            # user = settings.AUTH_USER_MODEL
-                
-            return JsonResponse(user_list,safe=False)
-        return render(request,'assign_book.html')    
+        # if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        #     result = dict()
+        #     user_list = []
+        #     result['status']="success"
+        #     for users in User.objects.all():
+        #         user_list.append(users)
+        #     result['data'] = user_list
+        #     # user = settings.AUTH_USER_MODEL
+        #     return JsonResponse(user_list,safe=False)
+        # return render(request,'assign_book.html')    
+        print("dvdfin")
+        # breakpoint()
+        user = User.objects.get()
+        return JsonResponse(user,safe=False)
+    

@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import User,Book
 from base.constance import Role
+# from tweak import render_field
+
 
 class UserForm(forms.ModelForm):
     '''user forms'''
@@ -23,6 +25,16 @@ class UserForm(forms.ModelForm):
         return instance
 
 class AddBook(forms.ModelForm):
+    # book_image = forms.ImageField(label="Book Image")
+    
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     # Add an i tag with the Font Awesome icon to the EmailInput widget
+    #     self.fields['book_image'].widget.attrs['placeholder'] = render_field(
+    #     'i',
+    #     attrs={'class': 'fa-solid fa-book'},
+    #     content='',)
+    # # ) + 'Enter your email'
     
     class Meta:
         model = Book
