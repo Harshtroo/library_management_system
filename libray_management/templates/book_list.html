@@ -38,41 +38,67 @@
 </head>
 
 <body>
-    
-
-        
-        <div class="home-background">
+    <div class="home-background">
         <div class="row" id="bookcard">
         </div>
+    </div>
+    <!-- user list -->>
+    <div class="modal" id="userpopbox">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" style="align-items: center;">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">User List</h4>
+                    <!-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> -->
+                </div>
+
+                <div>
+                    <table align="center">
+                        <tr>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{user.username}}</td>
+                            <td>({{user.email}})</td>
+                          </tr>
+                          {% endfor %}
+                          <!-- <select id="multiple-select" multiple>
+                            <option value="{{user.id}}">{{user.username}}({{user.email}})</option>
+                        </select> -->
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"  type="submit" class="btn btn-danger" data-bs-dismiss="modal">submmit</button>
+                </div>
+
+            </div>
         </div>
-    
+    </div>
+
     <script>
-        function trunString(string,words=17){
-            console.log(string);
-            return string.slice(0,words) + (string.length>words ? "...":"")
-                
+        function trunString(string, words = 17) {
+            return string.slice(0, words) + (string.length > words ? "..." : "")
+
         }
-        function showAllString(string){
-            return string
-        }
-        // console.log(string)
         $.ajax({
             url: "{% url 'book_list' %}",
             method: "GET",
             headers: { "X-CSRFToken": "{{csrf_token}}" },
             success: function bookList(book) {
-                // console.log(book);
 
                 output = ""
                 for (i = 0; i < book.length; i++) {
                     output += ` 
                                <div class="col-3">
                                 <div class="card w-80 h-80 mx-auto">
-                                <img src="${book[i].book_image}" style="height:200px;max-width:100px align:center">
+                                <img src="${book[i].book_image}" style="height:100px;width:min-content;align-self:center">
                                 <div class="card-body">
-                                    <p class="card-title" id="book name"><b>${trunString(book[i].book_name)}</b></p>
-                                    <a href="{% url 'assign_book'%}" class="btn btn-primary">Assign Book</a><br>
-                                    <p style="margin-left:225px">Author Name:<br>${trunString(book[i].author_name,5)}</p>
+                                    <p class="card-title box.item.cupcake" id="book name" title=${book[i].book_name}" ><b>${trunString(book[i].book_name)}</b></p>
+                                    <button  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userpopbox">Assign Book</button><br>
+                                    <p style="margin-left:225px margin-bottom:-39px">Author Name:<br>${trunString(book[i].author_name, 5)}</p>
                                     <p style="margin-right:209px " >Total Quantity:${book[i].quantity}</p>
                                     <p style="margin-right:189px">Available Quantity:</p>
                                 </div>
@@ -83,12 +109,6 @@
 
             }
         })
-
-        function assignBook() {
-            console.log("dncvsd")
-            window.location = "{% url 'assign_book' %}"
-        }
-
     </script>
 
 </body>
