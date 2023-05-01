@@ -1,11 +1,12 @@
+from typing import Any
 from django.shortcuts import render
 from django.shortcuts import redirect
-from django.views.generic import TemplateView, CreateView, ListView
+from django.views.generic import TemplateView, CreateView, ListView,FormView
 from .models import User, Book
-from .forms import UserForm, AddBook
+from .forms import UserForm, AddBook,  AsignBook
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views import View
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -14,7 +15,6 @@ from .mixin import MyCustomPermissions
 from django.contrib.auth.models import Group, Permission
 from django.core import serializers
 from django.conf import settings
-
 # import json
 
 
@@ -89,10 +89,11 @@ class SuccessMessage(TemplateView):
     template_name = "successpage.html"
 
 
-class BookList(ListView):
+class BookList(FormView):
     login_url = "login"
     model = Book
     template_name = "book_list.html"
+    form_class = AsignBook
 
     def get(self, request, *args, **kwargs):
         # print("user===============",User.objects.all())
@@ -111,32 +112,13 @@ class BookList(ListView):
                 data_list.append(book_list)
             # result["data"] = data_list
             return JsonResponse(data_list,safe=False)
-        
         return render(request, "book_list.html",context={'users':User.objects.all()})
 
-    # def get_context_data(self, **kwargs):
-        
-    #     users = User.objects.all()
-    #     user_data = [{'username': user.username, 'email': user.email} for user in users]
-    #     return JsonResponse(user_data, safe=False)
-    
-    
-# class AssignBook(ListView):
-#     model = User
-#     template_name = "assign_book.html"
+    def post(self, request, *args, **kwargs):
+        form = request.POST
+       
+        print("form========",form)
 
-#     def get(self, request, *args, **kwargs):
-#         # if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-#         #     result = dict()
-#         #     user_list = []
-#         #     result['status']="success"
-#         #     for users in User.objects.all():
-#         #         user_list.append(users)
-#         #     result['data'] = user_list
-#         #     # user = settings.AUTH_USER_MODEL
-#         #     return JsonResponse(user_list,safe=False)
-#         # return render(request,'assign_book.html')
-#         print("dvdfin")
-#         # breakpoint()
-#         user = User.objects.get()
-#         return JsonResponse(user, safe=False)
+        # form.save()
+        return JsonResponse({"data":"sucess"})
+        # return super().post(request, *args, **kwargs)

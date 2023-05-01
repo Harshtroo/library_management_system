@@ -52,26 +52,18 @@
                     <!-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> -->
                 </div>
 
-                <div>
-                    <table align="center">
-                        <tr>
-                            <th></th>
-                            <th></th>
-                        </tr>
+                <div align="center">
+                    <select multiple="multiple" name="option" id="option">
                         {% for user in users %}
-                        <tr>
-                            <td>{{user.username}}</td>
-                            <td>({{user.email}})</td>
-                          </tr>
-                          {% endfor %}
-                          <!-- <select id="multiple-select" multiple>
-                            <option value="{{user.id}}">{{user.username}}({{user.email}})</option>
-                        </select> -->
-                    </table>
+                        <option value="{{user.id}}">{{user.username}} ({{user.email}})</option>
+                        {% endfor %}
+
+                    </select>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button"  type="submit" class="btn btn-danger" data-bs-dismiss="modal">submmit</button>
+                    <button type="button" type="submit" class="btn btn-danger" data-bs-dismiss="modal"
+                        onclick="selectUser()">submmit</button>
                 </div>
 
             </div>
@@ -79,14 +71,48 @@
     </div>
 
     <script>
+
         function trunString(string, words = 17) {
             return string.slice(0, words) + (string.length > words ? "..." : "")
-
         }
+
+        var ids = []
+
+        function bookId(id) {
+            if (ids.length <1){
+                ids.push({})
+            }
+            ids[0]["book_id"] = id
+        }
+
+        function selectUser() {
+
+            var selectUserId = $('#option').val()
+            if (ids.length<1){
+                ids.push({})
+            }
+            ids[0]["user_id"] =selectUserId
+
+            $.ajax({
+                url: "{% url 'book_list' %}",
+                method: "POST",
+                headers: { "X-CSRFToken": "{{csrf_token}}" },
+                data: JSON.stringify(ids),
+                success: (data) => {
+                    console.log(data);
+                },
+                error: (error) => {
+                    console.log(error);
+                }
+            })
+        }
+        console.log("ids=====", ids)
+
         $.ajax({
             url: "{% url 'book_list' %}",
             method: "GET",
             headers: { "X-CSRFToken": "{{csrf_token}}" },
+            // data:[id,selectUserId],
             success: function bookList(book) {
 
                 output = ""
@@ -96,19 +122,23 @@
                                 <div class="card w-80 h-80 mx-auto">
                                 <img src="${book[i].book_image}" style="height:100px;width:min-content;align-self:center">
                                 <div class="card-body">
-                                    <p class="card-title box.item.cupcake" id="book name" title=${book[i].book_name}" ><b>${trunString(book[i].book_name)}</b></p>
-                                    <button  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userpopbox">Assign Book</button><br>
+                                    <p class="card-title box.item.cupcake" id="book name" title=${book[i].book_name}"><b>${trunString(book[i].book_name)}</b></p>
+                                    <button  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userpopbox" data-id ="${book[i].id}" id="bookbtn_${book[i].id}"  onclick="bookId(${book[i].id})">Assign Book</button><br>
                                     <p style="margin-left:225px margin-bottom:-39px">Author Name:<br>${trunString(book[i].author_name, 5)}</p>
                                     <p style="margin-right:209px " >Total Quantity:${book[i].quantity}</p>
-                                    <p style="margin-right:189px">Available Quantity:</p>
+                                    <p style="margin-right:189px">Available Quantity:${book[i].quantity}</p>
                                 </div>
                                 </div>
                                 </div>`
                 }
-                document.getElementById("bookcard").innerHTML = output
 
+                document.getElementById("bookcard").innerHTML = output
             }
         })
+
+
+
+
     </script>
 
 </body>
