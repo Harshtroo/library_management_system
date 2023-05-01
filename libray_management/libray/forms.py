@@ -33,5 +33,5 @@ class AddBook(forms.ModelForm):
 class AsignBook(forms.ModelForm):
     class Meta:
         model = AssignBook
-        fields = ['users_name','book']
+        fields = ['user','book']
         
