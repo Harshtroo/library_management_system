@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import User,Book,AssignBook
+from .models import User,Book,AssignedBook
 from base.constance import Role
 # from tweak import render_field
 
@@ -32,6 +32,6 @@ class AddBook(forms.ModelForm):
     
 class AsignBook(forms.ModelForm):
     class Meta:
-        model = AssignBook
-        fields = ['users_name','book']
+        model = AssignedBook
+        fields = "__all__"
         
