@@ -55,7 +55,7 @@
                 <div align="center">
                     <select multiple="multiple" name="option" id="option">
                         {% for user in users %}
-                        <option value="{{user.id}}">{{user.username}} ({{user.email}})</option>
+                        <option value={{user.id}}>{{user.username}} ({{user.email}})</option>
                         {% endfor %}
 
                     </select>
@@ -76,37 +76,33 @@
             return string.slice(0, words) + (string.length > words ? "..." : "")
         }
 
-        var ids = []
+        var ids = {}
 
         function bookId(id) {
-            if (ids.length <1){
-                ids.push({})
-            }
-            ids[0]["book_id"] = id
+            ids["book_id"] = id
+            
         }
 
         function selectUser() {
-
-            var selectUserId = $('#option').val()
-            if (ids.length<1){
-                ids.push({})
-            }
-            ids[0]["user_id"] =selectUserId
-
+            var selectUserId = $('#option').val();
+            ids["user_id"] = selectUserId;     
+            // debugger  
+            console.log(ids)
+            
             $.ajax({
-                url: "{% url 'book_list' %}",
                 method: "POST",
+                url: "{% url 'book_list' %}",
                 headers: { "X-CSRFToken": "{{csrf_token}}" },
-                data: JSON.stringify(ids),
+                data:ids,
                 success: (data) => {
                     console.log(data);
                 },
                 error: (error) => {
                     console.log(error);
                 }
-            })
+            })            
         }
-        console.log("ids=====", ids)
+
 
         $.ajax({
             url: "{% url 'book_list' %}",
@@ -131,7 +127,6 @@
                                 </div>
                                 </div>`
                 }
-
                 document.getElementById("bookcard").innerHTML = output
             }
         })

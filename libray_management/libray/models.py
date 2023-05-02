@@ -20,12 +20,12 @@ class Book(models.Model):
     author_name = models.CharField(max_length=100)
     price = models.IntegerField()
     quantity = models.IntegerField(default=0)
-    # user = models.ManyToManyField(User) 
+    # user = models.ManyToManyField(User)
     
     def __str__(self):
         return self.book_name
 
-class AssignBook(models.Model):
+class AssignedBook(models.Model):
     user = models.ManyToManyField(User)
     book = models.ForeignKey(Book,on_delete=models.CASCADE)   
     date_borrowed = models.DateTimeField(default=timezone.now)
