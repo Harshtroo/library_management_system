@@ -117,7 +117,10 @@ class BookList(FormView):
     def post(self, request, *args, **kwargs):
         form = request.POST
         print(form)
-        print(form.getlist("user_id[]"))
-        
-        
+        get_user_id = request.POST.getlist("user_id[]")
+        get_book_id = request.POST.get("book_id")
+        print("get_user_i====",get_user_id)
+        print("get_book_i====",get_book_id)
+        # form.user.add(get_user_id)
+        # get_user_id.User.add(get_book_id)
         return JsonResponse({"data":"sucess"})
