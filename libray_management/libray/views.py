@@ -2,7 +2,7 @@ from typing import Any
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, CreateView, ListView,FormView
-from .models import User, Book
+from .models import User, Book,AssignedBook
 from .forms import UserForm, AddBook,  AsignBook
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views import View
@@ -115,12 +115,12 @@ class BookList(FormView):
         return render(request, "book_list.html",context={'users':User.objects.all()})
 
     def post(self, request, *args, **kwargs):
-        form = request.POST
-        print(form)
+
         get_user_id = request.POST.getlist("user_id[]")
         get_book_id = request.POST.get("book_id")
-        print("get_user_i====",get_user_id)
-        print("get_book_i====",get_book_id)
-        # form.user.add(get_user_id)
-        # get_user_id.User.add(get_book_id)
+
+        book_obj = Book.objects.filter(id=get_book_id).first()
+        assigned_book = AssignedBook.objects.create(book=book_obj)
+        assigned_book.user.set(get_user_id)
+        
         return JsonResponse({"data":"sucess"})

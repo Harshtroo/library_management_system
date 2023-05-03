@@ -27,7 +27,9 @@ class Book(models.Model):
 
 class AssignedBook(models.Model):
     user = models.ManyToManyField(User)
-    book = models.ForeignKey(Book,on_delete=models.CASCADE)   
+    book = models.ForeignKey(Book,on_delete= models.CASCADE)
     date_borrowed = models.DateTimeField(default=timezone.now)
     date_returned = models.DateTimeField(null=True, blank=True)
 
+    def __str__(self) -> str:
+        return self.book.book_name
