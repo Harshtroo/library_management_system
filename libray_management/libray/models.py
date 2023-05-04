@@ -20,6 +20,7 @@ class Book(models.Model):
     author_name = models.CharField(max_length=100)
     price = models.IntegerField()
     quantity = models.IntegerField(default=0)
+    available_quantity = models.PositiveIntegerField(default=0)
     # user = models.ManyToManyField(User)
     
     def __str__(self):

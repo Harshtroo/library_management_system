@@ -38,6 +38,18 @@
 </head>
 
 <body>
+    <div id="errormessage">
+        {% if messages %}
+        <ul class="alert alert-success" style="list-style-type: none">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                {{ message }}
+                </li>
+                {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
     <div class="home-background">
         <div class="row" id="bookcard">
         </div>
@@ -80,29 +92,45 @@
 
         function bookId(id) {
             ids["book_id"] = id
-            
+
         }
 
         function selectUser() {
+
             var selectUserId = $('#option').val();
-            ids["user_id"] = selectUserId;     
+
+            ids["user_id"] = selectUserId;
             // debugger  
-            console.log(ids)
-            
+            // console.log(ids)
             $.ajax({
                 method: "POST",
                 url: "{% url 'book_list' %}",
                 headers: { "X-CSRFToken": "{{csrf_token}}" },
-                data:ids,
+                data: ids,
                 success: (data) => {
-                    console.log(data);
-                },
-                error: (error) => {
-                    console.log(error);
-                }
-            })            
-        }
+                    if (data.message == "success") {
 
+                        // console.log(ids)
+                        console.log(ids.user_id.length)
+
+                        document.getElementById("errormessage").innerHTML = "Assign Book successfully."
+                        // $('#option').val([])
+                        // console.log(ids.user_id.length);
+                        document.getElementById("available").innerHTML = ids.user_id.length
+                        setInterval(function () {window.location.reload()}, 2000);
+                    }   
+                },
+                error: (response) => {
+                    // if (book_id[0])
+                    let json_response =  response.responseJSON;
+                    document.getElementById("errormessage").innerHTML = "Already assign book this user"
+                    // console.log(json_response);
+                    // $('#option').val([])
+                    setInterval(function () {window.location.reload()}, 2000);
+
+                }
+            })
+        }
 
         $.ajax({
             url: "{% url 'book_list' %}",
@@ -122,18 +150,15 @@
                                     <button  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userpopbox" data-id ="${book[i].id}" id="bookbtn_${book[i].id}"  onclick="bookId(${book[i].id})">Assign Book</button><br>
                                     <p style="margin-left:225px margin-bottom:-39px">Author Name:<br>${trunString(book[i].author_name, 5)}</p>
                                     <p style="margin-right:209px " >Total Quantity:${book[i].quantity}</p>
-                                    <p style="margin-right:189px">Available Quantity:${book[i].quantity}</p>
+                                    <p style="margin-right:189px" id="available">Available Quantity:${book[i].available}</p>
                                 </div>
                                 </div>
                                 </div>`
                 }
                 document.getElementById("bookcard").innerHTML = output
+
             }
         })
-
-
-
-
     </script>
 
 </body>

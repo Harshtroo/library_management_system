@@ -77,7 +77,9 @@ class AddBooks(LoginRequiredMixin, MyCustomPermissions, CreateView):
     def post(self, request, *args, **kwargs):
         book_form = self.form_class(request.POST, request.FILES)
         if book_form.is_valid():
-            book_form.save()
+            book = book_form.save(commit=False)
+            book.available_quantity = book_form.cleaned_data.get("quantity")
+            book.save()
             messages.success(request, "successfully add book.")
             return JsonResponse({"message": "success"})
         return JsonResponse({"message": book_form.errors}, status=400)
@@ -108,6 +110,7 @@ class BookList(FormView):
                     "book_name": books.book_name,
                     "author_name": books.author_name,
                     "quantity": books.quantity,
+                    "available":books.available_quantity,
                 }
                 data_list.append(book_list)
             # result["data"] = data_list
@@ -121,6 +124,19 @@ class BookList(FormView):
 
         book_obj = Book.objects.filter(id=get_book_id).first()
         assigned_book = AssignedBook.objects.create(book=book_obj)
-        assigned_book.user.set(get_user_id)
+
+        if AssignedBook.objects.filter(book = book_obj,user__in=get_user_id).exists():
+            return JsonResponse(status=400,data={"message": "error"})
+        # avl_qu = book_obj.quantity - len(get_user_id)
+        # avl_qu.save()
+        # breakpoint()
+
+        setattr(book_obj,"available_quantity", book_obj.available_quantity - len(get_user_id))
+        book_obj.save()
         
-        return JsonResponse({"data":"sucess"})
+        assigned_book.user.set(get_user_id)
+        print("total",book_obj.quantity)
+
+        
+        
+        return JsonResponse({"message":"success"})
