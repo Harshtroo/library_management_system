@@ -39,16 +39,7 @@
 
 <body>
     <div id="errormessage">
-        {% if messages %}
-        <ul class="alert alert-success" style="list-style-type: none">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
-                {{ message }}
-                </li>
-                {% endfor %}
-        </ul>
-        {% endif %}
+        
     </div>
     <div class="home-background">
         <div class="row" id="bookcard">
@@ -105,7 +96,9 @@
                 success: (data) => {
                     if (data.message == "success") {
 
-                        document.getElementById("errormessage").innerHTML = "Assign Book successfully."
+                        document.getElementById("errormessage").innerHTML = `<div class="alert alert-danger" role="alert">
+                        Successfully assign book.
+                        </div>Assign Book successfully.`
                         // $('#option').val([])
                         document.getElementById(`available${data.book_id}`).innerHTML =  data.rem
                         // console.log(ids);
@@ -139,7 +132,7 @@
                                     <button  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userpopbox" data-id ="${book[i].id}" id="bookbtn_${book[i].id}"  onclick="bookId(${book[i].id})">Assign Book</button><br>
                                     <p style="margin-left:225px margin-bottom:-39px">Author Name:<br>${trunString(book[i].author_name, 5)}</p>
                                     <p style="margin-right:209px" id="total" >Total Quantity:${book[i].quantity}</p>
-                                    <p style="margin-right:189px" id="available${book[i].id}">Available Quantity:</p>
+                                    <p style="margin-right:189px" id="available${book[i].id}">Available Quantity:${book[i].available}</p>
                                 </div>
                                 </div>
                                 </div>`

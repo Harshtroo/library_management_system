@@ -108,25 +108,23 @@ class BookList(FormView):
             result["status"] = "success"
             
             for books in Book.objects.all():
+                total_books_assign = AssignedBook.objects.filter(book = books).count()
+                rem = books.quantity - total_books_assign
+                
                 book_list = {
                     "id": books.id,
                     "book_image": books.book_image.url,
                     "book_name": books.book_name,
                     "author_name": books.author_name,
                     "quantity": books.quantity,
-                    "available":books.quantity,
+                    "available":rem,
                 }
-                # print(book_list)
+          
+                
                 data_list.append(book_list)
             
             return JsonResponse(data_list,safe=False)
-        def booklist():
-            assign_book_list=[]
-            total_books_assign = AssignedBook.objects.filter(book = books).count()
-            rem = books.quantity - total_books_assign
-            assign_book_list.append(rem)
-            print("rem",assign_book_list)
-            booklist()
+        
         return render(request, "book_list.html",context={'users':User.objects.all()})
 
     def post(self, request, *args, **kwargs):
