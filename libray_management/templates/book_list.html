@@ -59,19 +59,14 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content" style="align-items: center;">
 
-                <div class="modal-header">
-                    <h4 class="modal-title">User List</h4>
-                    <!-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> -->
-                </div>
 
-                <div align="center">
-                    <select multiple="multiple" name="option" id="option">
-                        {% for user in users %}
-                        <option value={{user.id}}>{{user.username}} ({{user.email}})</option>
-                        {% endfor %}
+                <label for="cars">User List</label>
 
-                    </select>
-                </div>
+                <select name="assignbook" id="option">
+                    {% for user in users %}
+                    <option value={{user.id}}>{{user.username}} ({{user.email}})</option>
+                    {% endfor %}
+                </select>
 
                 <div class="modal-footer">
                     <button type="button" type="submit" class="btn btn-danger" data-bs-dismiss="modal"
@@ -91,7 +86,7 @@
         var ids = {}
 
         function bookId(id) {
-            ids["book_id"] = id
+            ids["book"] = id
 
         }
 
@@ -99,7 +94,7 @@
 
             var selectUserId = $('#option').val();
 
-            ids["user_id"] = selectUserId;
+            ids["user"] = selectUserId;
             // debugger  
             // console.log(ids)
             $.ajax({
@@ -110,24 +105,19 @@
                 success: (data) => {
                     if (data.message == "success") {
 
-                        // console.log(ids)
-                        console.log(ids.user_id.length)
-
                         document.getElementById("errormessage").innerHTML = "Assign Book successfully."
                         // $('#option').val([])
-                        // console.log(ids.user_id.length);
-                        document.getElementById("available").innerHTML = ids.user_id.length
-                        setInterval(function () {window.location.reload()}, 2000);
-                    }   
+                        document.getElementById(`available${data.book_id}`).innerHTML =  data.rem
+                        // console.log(ids);
+                        // setInterval(function () { window.location.reload() }, 1000);
+                    }
                 },
                 error: (response) => {
-                    // if (book_id[0])
-                    let json_response =  response.responseJSON;
+                   
+                    let json_response = response.responseJSON;
                     document.getElementById("errormessage").innerHTML = "Already assign book this user"
-                    // console.log(json_response);
                     // $('#option').val([])
-                    setInterval(function () {window.location.reload()}, 2000);
-
+                    setInterval(function () { window.location.reload() }, 2000);
                 }
             })
         }
@@ -138,7 +128,6 @@
             headers: { "X-CSRFToken": "{{csrf_token}}" },
             // data:[id,selectUserId],
             success: function bookList(book) {
-
                 output = ""
                 for (i = 0; i < book.length; i++) {
                     output += ` 
@@ -149,14 +138,14 @@
                                     <p class="card-title box.item.cupcake" id="book name" title=${book[i].book_name}"><b>${trunString(book[i].book_name)}</b></p>
                                     <button  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userpopbox" data-id ="${book[i].id}" id="bookbtn_${book[i].id}"  onclick="bookId(${book[i].id})">Assign Book</button><br>
                                     <p style="margin-left:225px margin-bottom:-39px">Author Name:<br>${trunString(book[i].author_name, 5)}</p>
-                                    <p style="margin-right:209px " >Total Quantity:${book[i].quantity}</p>
-                                    <p style="margin-right:189px" id="available">Available Quantity:${book[i].available}</p>
+                                    <p style="margin-right:209px" id="total" >Total Quantity:${book[i].quantity}</p>
+                                    <p style="margin-right:189px" id="available${book[i].id}">Available Quantity:</p>
                                 </div>
                                 </div>
                                 </div>`
                 }
                 document.getElementById("bookcard").innerHTML = output
-
+                // document.getElementById("available").innerHTML =(book[i].quantity) - 1
             }
         })
     </script>

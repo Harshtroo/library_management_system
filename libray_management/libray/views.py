@@ -16,6 +16,7 @@ from django.contrib.auth.models import Group, Permission
 from django.core import serializers
 from django.conf import settings
 # import json
+from django.db.models import Count
 
 
 class Home(TemplateView):
@@ -97,12 +98,15 @@ class BookList(FormView):
     template_name = "book_list.html"
     form_class = AsignBook
 
+    
+        
     def get(self, request, *args, **kwargs):
         # print("user===============",User.objects.all())
         if request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest":
             result = dict()
             data_list = []
             result["status"] = "success"
+            
             for books in Book.objects.all():
                 book_list = {
                     "id": books.id,
@@ -110,33 +114,34 @@ class BookList(FormView):
                     "book_name": books.book_name,
                     "author_name": books.author_name,
                     "quantity": books.quantity,
-                    "available":books.available_quantity,
+                    "available":books.quantity,
                 }
+                # print(book_list)
                 data_list.append(book_list)
-            # result["data"] = data_list
+            
             return JsonResponse(data_list,safe=False)
+        def booklist():
+            assign_book_list=[]
+            total_books_assign = AssignedBook.objects.filter(book = books).count()
+            rem = books.quantity - total_books_assign
+            assign_book_list.append(rem)
+            print("rem",assign_book_list)
+            booklist()
         return render(request, "book_list.html",context={'users':User.objects.all()})
 
     def post(self, request, *args, **kwargs):
-
-        get_user_id = request.POST.getlist("user_id[]")
-        get_book_id = request.POST.get("book_id")
-
-        book_obj = Book.objects.filter(id=get_book_id).first()
-        assigned_book = AssignedBook.objects.create(book=book_obj)
-
-        if AssignedBook.objects.filter(book = book_obj,user__in=get_user_id).exists():
-            return JsonResponse(status=400,data={"message": "error"})
-        # avl_qu = book_obj.quantity - len(get_user_id)
-        # avl_qu.save()
-        # breakpoint()
-
-        setattr(book_obj,"available_quantity", book_obj.available_quantity - len(get_user_id))
-        book_obj.save()
-        
-        assigned_book.user.set(get_user_id)
-        print("total",book_obj.quantity)
-
-        
-        
-        return JsonResponse({"message":"success"})
+        form = AsignBook(request.POST)
+        if form.is_valid():
+            user = User.objects.get(id=request.POST.get("user"))
+            book = Book.objects.get(id=request.POST.get("book"))
+            
+            if AssignedBook.objects.filter(book = book,user= user).exists():
+                return JsonResponse(status=400,data={"message": "error"})
+            assignment = form.save(commit=False)
+            assignment.user = user
+            assignment.save()
+            total_books_assign = AssignedBook.objects.filter(book = book).count()
+            # print("total ==== ",total_books_assign)
+            rem = book.quantity - total_books_assign
+            # print("rem",rem)
+            return JsonResponse({"message":"success","rem":rem,"book_id":book.id})
