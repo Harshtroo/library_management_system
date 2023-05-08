@@ -1,0 +1,52 @@
+{% include 'base.html' %}
+<html>
+
+<head>
+    <style>
+        .table{
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="align-middle table">
+        <h3>Assign book for User</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">Book Name</th>
+                    <th scope="col">Return Book</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assign_user in assign_book_user %}
+                <tr>
+                    <td>{{assign_user.book_id}}</td>
+                    <td>{{assign_user.book.book_name}}</td>
+                    <td><button type="button" class="btn btn-primary" >Return Book</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+<script>
+    $.ajax({
+                url: "{% url 'user_assign_book_list' %}",
+                method: "GET",
+                success: (data) => {
+                    console.log(data)
+                   
+                }
+                error: (data) => {
+
+                    console.log(data)
+                }
+
+    })
+</script>
+</html>

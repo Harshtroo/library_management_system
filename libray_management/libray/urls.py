@@ -15,5 +15,6 @@ urlpatterns = [
     path("add_book/", views.AddBooks.as_view(), name="add_book"),
     path("success_register/", views.SuccessMessage.as_view(), name="success_register"),
     path("book_list/", views.BookList.as_view(), name="book_list"),
+    path('user_assign_book_list/',views.AssignBookUser.as_view(),name="user_assign_book_list")
     
 ]

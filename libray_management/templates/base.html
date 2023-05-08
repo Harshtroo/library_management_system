@@ -68,6 +68,7 @@
           {% if request.user.is_authenticated and request.user.role == 'librarian' %}
           <a class="nav-link active btn-book-list" aria-current="page" href="{% url 'book_list' %}">Book List</a>&nbsp;&nbsp;
           {% else %}
+          <a class="nav-link active btn-book-list" aria-current="page" href="{% url 'user_assign_book_list' %}">Book List</a>&nbsp;&nbsp;
           {% endif %}
           
           {% if request.user.is_authenticated %}

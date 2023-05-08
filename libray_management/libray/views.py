@@ -31,14 +31,11 @@ class Login(LoginView):
     def post(self, request, *args, **kwargs):
         username = request.POST.get("username", None)
         password = request.POST.get("password", None)
-        # print("username",username," password",password)
         user = authenticate(username=username, password=password)
         # print(user)
         if user is not None:
             login(request, user)
-            # messages.success(self.request,"successfully login")
             return JsonResponse({"message": "success"})
-
         return JsonResponse({"message": "username and password not match."}, status=400)
 
 
@@ -87,30 +84,27 @@ class AddBooks(LoginRequiredMixin, MyCustomPermissions, CreateView):
 
 
 class SuccessMessage(TemplateView):
-    """ """
+    """ success class"""
 
     template_name = "successpage.html"
 
 
 class BookList(FormView):
+    """ book list show """
     login_url = "login"
     model = Book
     template_name = "book_list.html"
     form_class = AsignBook
 
-    
-        
     def get(self, request, *args, **kwargs):
-        # print("user===============",User.objects.all())
         if request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest":
             result = dict()
             data_list = []
             result["status"] = "success"
-            
+
             for books in Book.objects.all():
                 total_books_assign = AssignedBook.objects.filter(book = books).count()
                 rem = books.quantity - total_books_assign
-                
                 book_list = {
                     "id": books.id,
                     "book_image": books.book_image.url,
@@ -119,12 +113,8 @@ class BookList(FormView):
                     "quantity": books.quantity,
                     "available":rem,
                 }
-          
-                
                 data_list.append(book_list)
-            
             return JsonResponse(data_list,safe=False)
-        
         return render(request, "book_list.html",context={'users':User.objects.all()})
 
     def post(self, request, *args, **kwargs):
@@ -132,14 +122,45 @@ class BookList(FormView):
         if form.is_valid():
             user = User.objects.get(id=request.POST.get("user"))
             book = Book.objects.get(id=request.POST.get("book"))
-            
-            if AssignedBook.objects.filter(book = book,user= user).exists():
-                return JsonResponse(status=400,data={"message": "error"})
-            assignment = form.save(commit=False)
-            assignment.user = user
-            assignment.save()
-            total_books_assign = AssignedBook.objects.filter(book = book).count()
-            # print("total ==== ",total_books_assign)
-            rem = book.quantity - total_books_assign
-            # print("rem",rem)
-            return JsonResponse({"message":"success","rem":rem,"book_id":book.id})
+            btn_action = request.POST.get('btn_action')
+
+            # if btn_action == 'return_book':
+            #     if AssignedBook.objects.filter(book = book,user= user).exists():
+            #         AssignedBook.objects.filter(book = book,user= user).delete()
+            #         count_assign_book = AssignedBook.objects.filter(book = book).count()
+            #         add_book_avl = book.quantity + count_assign_book
+            #         return JsonResponse(status=200, data={"message":"successfully book return."})
+            #     return JsonResponse(status=400,data={"message":"already book return."})
+
+            if btn_action == 'assign_book':
+                if AssignedBook.objects.filter(book = book,user= user).exists():
+                    return JsonResponse(status=400,data={"message": "already book assign."})
+
+                assignment = form.save(commit=False)
+                assignment.user = user
+                assignment.save()
+
+                total_books_assign = AssignedBook.objects.filter(book = book).count()
+                rem = book.quantity - total_books_assign
+                return JsonResponse({"message":"successfully book assign.","rem":rem,"book_id":book.id})
+
+class AssignBookUser(TemplateView):
+    template_name = 'user_assign_book_list.html'
+    model = AssignedBook
+    
+    def get(self, request,*args, **kwargs):
+        assign_book_list = list(AssignedBook.objects.filter(user= request.user))
+        assign_book_data = [{'id': assign_book.book.id, 'book': assign_book.book.book_name} for assign_book in assign_book_list]
+        return JsonResponse(assign_book_data,safe=False)
+
+    # def post(self, request, *args, **kwargs):
+    #     user = User.objects.get(id=request.POST.get("user"))
+    #     book = Book.objects.get(id=request.POST.get("book"))
+        
+    #     if btn_action == 'return_book':
+    #             if AssignedBook.objects.filter(book = book,user= user).exists():
+    #                 AssignedBook.objects.filter(book = book,user= user).delete()
+    #                 count_assign_book = AssignedBook.objects.filter(book = book).count()
+    #                 add_book_avl = book.quantity + count_assign_book
+    #                 return JsonResponse(status=200, data={"message":"successfully book return."})
+    #             return JsonResponse(status=400,data={"message":"already book return."})

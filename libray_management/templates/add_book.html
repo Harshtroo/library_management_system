@@ -91,11 +91,7 @@
     </section>
 </body>
 <script>
-    // var imsge_tag = document.getElementById("id_book_image").append(preview())
-
-    // function preview() {
-    //     $('#showimage').attr('src', URL.createObjectURL(event.target.files[0]))
-    // }
+   
     let imagesArray = []
     var bookimage = document.getElementById("id_book_image")
     bookimage.addEventListener("change", () => {
@@ -122,10 +118,7 @@
         var price = document.getElementById("id_price").value
         var quantity = document.getElementById("id_quantity").value
         var bookimage = document.getElementById("id_book_image").files
-        console.log(bookimage);
-
-
-
+        // console.log(bookimage);
 
         var data = {
             "book_name": bookname,
@@ -134,7 +127,7 @@
             "quantity": quantity,
             "book_image": bookimage,
         }
-        console.log(data);
+        // console.log(data);
 
         var data = new FormData($('#addbook').get(0))
 
@@ -155,13 +148,14 @@
             },
             error: function (data, error) {
                 // alert("your id is already register")
-                console.log(data.responseJSON.message.book_image[0]);
+                // console.log(data.responseJSON.message.book_image[0]);
+                console.log("book image",data.responseJSON.message.book_image[0]);
                 document.getElementById("image_error").innerHTML = data.responseJSON.message.book_image[0]
                 document.getElementById("bookname_error").innerHTML = data.responseJSON.message.book_name[0]
                 document.getElementById("authorname_error").innerHTML = data.responseJSON.message.author_name[0]
                 document.getElementById("price_error").innerHTML = data.responseJSON.message.price[0]
                
-                // console.log("error", error);
+                console.log("error", error);
             },
         })
 
