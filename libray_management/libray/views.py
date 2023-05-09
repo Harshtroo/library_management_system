@@ -15,7 +15,6 @@ from .mixin import MyCustomPermissions
 from django.contrib.auth.models import Group, Permission
 from django.core import serializers
 from django.conf import settings
-# import json
 from django.db.models import Count
 
 
@@ -32,7 +31,6 @@ class Login(LoginView):
         username = request.POST.get("username", None)
         password = request.POST.get("password", None)
         user = authenticate(username=username, password=password)
-        # print(user)
         if user is not None:
             login(request, user)
             return JsonResponse({"message": "success"})
@@ -101,9 +99,8 @@ class BookList(FormView):
             result = dict()
             data_list = []
             result["status"] = "success"
-
             for books in Book.objects.all():
-                total_books_assign = AssignedBook.objects.filter(book = books).count()
+                total_books_assign = AssignedBook.objects.filter(book = books,is_deleted = False).count()
                 rem = books.quantity - total_books_assign
                 book_list = {
                     "id": books.id,
@@ -124,43 +121,76 @@ class BookList(FormView):
             book = Book.objects.get(id=request.POST.get("book"))
             btn_action = request.POST.get('btn_action')
 
-            # if btn_action == 'return_book':
-            #     if AssignedBook.objects.filter(book = book,user= user).exists():
-            #         AssignedBook.objects.filter(book = book,user= user).delete()
-            #         count_assign_book = AssignedBook.objects.filter(book = book).count()
-            #         add_book_avl = book.quantity + count_assign_book
-            #         return JsonResponse(status=200, data={"message":"successfully book return."})
-            #     return JsonResponse(status=400,data={"message":"already book return."})
-
             if btn_action == 'assign_book':
-                if AssignedBook.objects.filter(book = book,user= user).exists():
+                if AssignedBook.objects.filter(book = book,user= user,is_deleted = False):
                     return JsonResponse(status=400,data={"message": "already book assign."})
 
                 assignment = form.save(commit=False)
                 assignment.user = user
                 assignment.save()
 
-                total_books_assign = AssignedBook.objects.filter(book = book).count()
+                
+                total_books_assign = AssignedBook.objects.filter(book = book,is_deleted = False).count()
                 rem = book.quantity - total_books_assign
                 return JsonResponse({"message":"successfully book assign.","rem":rem,"book_id":book.id})
 
-class AssignBookUser(TemplateView):
+class AssignBookUser(View):
     template_name = 'user_assign_book_list.html'
     model = AssignedBook
-    
-    def get(self, request,*args, **kwargs):
-        assign_book_list = list(AssignedBook.objects.filter(user= request.user))
-        assign_book_data = [{'id': assign_book.book.id, 'book': assign_book.book.book_name} for assign_book in assign_book_list]
-        return JsonResponse(assign_book_data,safe=False)
+    queryset = AssignedBook.objects.filter(is_deleted = False)
 
-    # def post(self, request, *args, **kwargs):
-    #     user = User.objects.get(id=request.POST.get("user"))
-    #     book = Book.objects.get(id=request.POST.get("book"))
+    def get(self, request,*args, **kwargs):
+        assign_book_list = list(AssignedBook.objects.filter(user= request.user,is_deleted=False))
+        assign_book_data = [{'id': assign_book.book.id, 'book': assign_book.book.book_name} for assign_book in assign_book_list]
+        return render(self.request,self.template_name,context = {"assign_book_data":assign_book_data})
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        book = Book.objects.get(id=request.POST.get("book"))
         
-    #     if btn_action == 'return_book':
-    #             if AssignedBook.objects.filter(book = book,user= user).exists():
-    #                 AssignedBook.objects.filter(book = book,user= user).delete()
-    #                 count_assign_book = AssignedBook.objects.filter(book = book).count()
-    #                 add_book_avl = book.quantity + count_assign_book
-    #                 return JsonResponse(status=200, data={"message":"successfully book return."})
-    #             return JsonResponse(status=400,data={"message":"already book return."})
+        
+
+        if AssignedBook.objects.filter(book = book,user= user).exists():
+            if request.POST.get('button_action') == "return_book":
+            
+                soft_delete = AssignedBook.objects.get(book = book,user= user,is_deleted = False)
+                soft_delete.is_deleted = True
+                soft_delete.save()
+                
+                response = {
+                "status": True,
+                "message": "Book Returened!",
+                # "delete_count": after_return_count,
+                # "add_avl_book":add_book_avl,
+                # "history": history
+                }
+                return JsonResponse(response,safe=False)
+            else:
+                data_list=[]
+                for books in AssignedBook.objects.filter(book = book,user=user):
+                    book_list = {
+                        "date_borrowed": books.date_borrowed,
+                     
+                    }
+                    data_list.append(book_list)
+                return JsonResponse(data_list,safe=False)
+                
+                # response = {
+                # "status": True,
+                # "message": "Book Returened!",
+                # # "delete_count": after_return_count,
+                # # "add_avl_book":add_book_avl,
+                # # "history": history
+                # }
+                
+
+            # after_return_count = AssignedBook.objects.filter(book=book,user=user,is_deleted=False).count()
+            # print(after_return_count)
+            
+            # count_assign_book = AssignedBook.objects.filter(book = book,is_deleted= True).count()
+            # # print(count_assign_book)
+            # add_book_avl = book.quantity + count_assign_book
+            # history = AssignedBook.date_borrowed
+
+ 
+        

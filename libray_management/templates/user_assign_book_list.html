@@ -3,50 +3,114 @@
 
 <head>
     <style>
-        .table{
+        .table {
             margin-left: 20px;
-            margin-right: 20px;
+            /* align-self:baseline; */
+            width: 70%;
+            margin: 0px auto;
             margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
+    <div id="message">
+    </div>
     <div class="align-middle table">
-        <h3>Assign book for User</h3>
-        <table class="table table-bordered">
+        <h3 align="center">Book List</h3>
+        <table class="table table-bordered" align="center">
             <thead>
-                <tr>
+                <tr class="table-dark">
                     <th scope="col">id</th>
                     <th scope="col">Book Name</th>
                     <th scope="col">Return Book</th>
+                    <th scope="col">Count</th>
                 </tr>
             </thead>
             <tbody>
-                {% for assign_user in assign_book_user %}
+                {% for assign_user in assign_book_data %}
                 <tr>
-                    <td>{{assign_user.book_id}}</td>
-                    <td>{{assign_user.book.book_name}}</td>
-                    <td><button type="button" class="btn btn-primary" >Return Book</button></td>
+                    <td>{{assign_user.id}}</td>
+                    <td>{{assign_user.book}}</td>
+                    <td><button type="button" name="return_btn" book_id="{{assign_user.id}}" id="return_book"
+                            class="btn btn-primary" onclick="returnBook(this)">Return Book</button></td>
+                    <td><button type="button" name="count_btn" class="btn btn-primary" book_id="{{assign_user.id}}"
+                            onclick="count(this)">Count</button></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    <div class="modal" id="userpopbox">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" style="align-items: center;">
+
+                <label for="cars">User List</label>
+                <select name="assignbook" id="option">
+                    {% for user in users %}
+                    <option value={{user.id}}>{{user.username}} ({{user.email}}) </option>
+                    {% endfor %}
+                </select>
+                <div class="modal-footer">
+                    <button name="customSubmit" type="button" type="submit" class="btn btn-danger"
+                        data-bs-dismiss="modal" onclick="selectUser()">submmit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script>
-    $.ajax({
-                url: "{% url 'user_assign_book_list' %}",
-                method: "GET",
-                success: (data) => {
-                    console.log(data)
-                   
-                }
-                error: (data) => {
+    function returnBook(elem) {
+        let book_id = elem.getAttribute('book_id')
+        commanAjax(book_id, "return_book")
 
-                    console.log(data)
+
+    }
+
+    function count(elem) {
+        let book_id = elem.getAttribute('book_id')
+        commanAjax(book_id, "count")
+        console.log(book_id)
+
+    }
+    function commanAjax(book_id, button_action) {
+        $.ajax({
+            url: "/user_assign_book_list/",
+            method: "POST",
+            headers: { "X-CSRFToken": "{{csrf_token}}" },
+            data: { "book": book_id, "button_action": button_action },
+            success: function (data) {
+                if (data.message) {
+                    document.getElementById("message").innerHTML = `<div class="alert alert-success" role="alert">
+                    successfully returned book </div>`
+                }
+                else {
+                console.log(data);
+                for (i=0;i<len(data);i++){
+
                 }
 
-    })
+                    `<div class="modal" id="userpopbox">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content" style="align-items: center;">
+                            
+                        
+                            <div class="modal-footer">
+                                <button name="customSubmit" type="button" type="submit" class="btn btn-danger" data-bs-dismiss="modal"
+                                    onclick="selectUser()">submmit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+                }
+
+                // setInterval(function () { window.location.reload() }, 2000)
+            },
+            error: function (error) {
+                console.log("Error: ", error);
+            }
+        })
+    }
 </script>
+
 </html>

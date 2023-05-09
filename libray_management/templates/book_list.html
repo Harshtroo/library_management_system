@@ -73,22 +73,14 @@
         var ids = {}
 
         function bookId(val) {
-            debugger
+        
             $("#userpopbox").modal("show")
             ids["btn_action"] = val.name
             ids["book"] = val.dataset.id
         }
-        function returnBook(val){
-            $("#userpopbox").modal("show")
-            ids["btn_action"] = val.name
-            ids["book"] = val.dataset.id
-        }
-
+        
         function selectUser() {
-
             var selectUserId = $('#option').val();
-
-
             ids["user"] = selectUserId;
             
             $.ajax({
@@ -97,8 +89,6 @@
                 headers: { "X-CSRFToken": "{{csrf_token}}" },
                 data: ids,
                 success: (data) => {
-                    
-                    
                     document.getElementById("errormessage").innerHTML = `<div class="alert alert-success" role="alert">
                     ${data.message} </div>`
                     if (data.rem){
@@ -119,7 +109,6 @@
             url: "{% url 'book_list' %}",
             method: "GET",
             headers: { "X-CSRFToken": "{{csrf_token}}" },
-            // data:[id,selectUserId],
             success: function bookList(book) {
                 output = ""
                 for (i = 0; i < book.length; i++) {
@@ -130,7 +119,7 @@
                                 <div class="card-body">
                                     <p class="card-title box.item.cupcake" id="book name" title=${book[i].book_name}"><b>${trunString(book[i].book_name)}</b></p>
                                     <button name="assign_book"  class="btn btn-primary" data-id ="${book[i].id}" id="bookbtn_${book[i].id}"  onclick="bookId(this)">Assign Book</button><br>
-                                    <button name="return_book" class="btn btn-primary"  data-id= "${book[i].id}" id="returnbtn_${book[i].id}" onclick="returnBook(this)" style="margin-top:8px">Return Book</button>
+                                    
                                     <p style="margin-left:225px margin-bottom:-39px">Author Name:<br>${trunString(book[i].author_name, 5)}</p>
                                     <p style="margin-right:209px" id="total" >Total Quantity:${book[i].quantity}</p>
                                     <p style="margin-right:189px" id="available${book[i].id}">Available Quantity:${book[i].available}</p>

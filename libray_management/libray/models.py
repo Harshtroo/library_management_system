@@ -30,6 +30,17 @@ class AssignedBook(models.Model):
     book = models.ForeignKey(Book,on_delete= models.CASCADE)
     date_borrowed = models.DateTimeField(default=timezone.now)
     date_returned = models.DateTimeField(null=True, blank=True)
-
+    is_deleted = models.BooleanField(default=False)
+    available_quantity = models.IntegerField(default=0)
+    
+    def soft_delete(self):
+        '''soft delete funcction'''
+        self.is_deleted= True
+        self.save()
+        
+    # def restore(self):
+    #     self.is_deleted = False
+    #     self.save()
+        
     def __str__(self) -> str:
         return self.book.book_name
