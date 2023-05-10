@@ -10,6 +10,21 @@
             margin: 0px auto;
             margin-top: 20px;
         }
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -41,37 +56,34 @@
             </tbody>
         </table>
     </div>
+
     <div class="modal" id="userpopbox">
         <div class="modal-dialog modal-xl">
             <div class="modal-content" style="align-items: center;">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"aria-label="Close" style="margin-left: auto;"></button>
 
-                <label for="cars">User List</label>
-                <select name="assignbook" id="option">
-                    {% for user in users %}
-                    <option value={{user.id}}>{{user.username}} ({{user.email}}) </option>
-                    {% endfor %}
-                </select>
-                <div class="modal-footer">
-                    <button name="customSubmit" type="button" type="submit" class="btn btn-danger"
-                        data-bs-dismiss="modal" onclick="selectUser()">submmit</button>
+                <h4>Book History</h4>
+                <div class="modal-body" style="width: 500px;">
                 </div>
             </div>
         </div>
     </div>
 </body>
 <script>
+    
     function returnBook(elem) {
         let book_id = elem.getAttribute('book_id')
         commanAjax(book_id, "return_book")
-
-
     }
 
     function count(elem) {
         let book_id = elem.getAttribute('book_id')
+        $("#userpopbox").modal("show")
+
+        var modal_show = $(event.relatedTarget).data('date_borrowed')
+        $(this).find(".modal-body").text(modal_show)
         commanAjax(book_id, "count")
         console.log(book_id)
-
     }
     function commanAjax(book_id, button_action) {
         $.ajax({
@@ -82,26 +94,47 @@
             success: function (data) {
                 if (data.message) {
                     document.getElementById("message").innerHTML = `<div class="alert alert-success" role="alert">
-                    successfully returned book </div>`
+                    ${data.message} </div>`
+                    setInterval(function () { window.location.reload() }, 2000);
                 }
                 else {
-                console.log(data);
-                for (i=0;i<len(data);i++){
+                    $('#userpopbox').modal('show');
+                    let tableHtml = document.createElement("table")
+                    tableHtml.border = '2px'
+                    tableHtml.className = 'table table-bordered '
 
-                }
 
-                    `<div class="modal" id="userpopbox">
-                    <div class="modal-dialog modal-xl">
-                        <div class="modal-content" style="align-items: center;">
-                            
-                        
-                            <div class="modal-footer">
-                                <button name="customSubmit" type="button" type="submit" class="btn btn-danger" data-bs-dismiss="modal"
-                                    onclick="selectUser()">submmit</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>`
+
+                    let tableHead = document.createElement("thead")
+                    var th = document.createElement('th')
+                    var tr = document.createElement("tr")
+
+                    let addDate = document.createTextNode(' Assign Book Date')
+                    th.appendChild(addDate)
+                    tr.appendChild(th)
+
+                    tableHead.appendChild(tr)
+                    tableHtml.appendChild(tableHead)
+
+                    let tableBody = document.createElement('tbody')
+
+
+                    data.forEach((value, key) => {
+                        let myDate = new Date(value.date_borrowed)
+                        var tr = document.createElement('tr');
+                        var td = document.createElement('td');
+                        var myDate1 = `${myDate.getDate()}-${myDate.getMonth()}-${myDate.getFullYear()} (${myDate.getHours()} :${myDate.getMinutes()} : ${myDate.getSeconds()})`
+                        var date = document.createTextNode(myDate1)
+                        td.appendChild(date)
+
+                        tr.appendChild(td);
+
+
+                        tableBody.appendChild(tr);
+
+                    })
+                    tableHtml.appendChild(tableBody);
+                    $("#userpopbox").find('.modal-body').html(tableHtml)
                 }
 
                 // setInterval(function () { window.location.reload() }, 2000)

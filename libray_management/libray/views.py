@@ -129,7 +129,6 @@ class BookList(FormView):
                 assignment.user = user
                 assignment.save()
 
-                
                 total_books_assign = AssignedBook.objects.filter(book = book,is_deleted = False).count()
                 rem = book.quantity - total_books_assign
                 return JsonResponse({"message":"successfully book assign.","rem":rem,"book_id":book.id})
@@ -148,21 +147,15 @@ class AssignBookUser(View):
         user = request.user
         book = Book.objects.get(id=request.POST.get("book"))
         
-        
-
-        if AssignedBook.objects.filter(book = book,user= user).exists():
+        if AssignedBook.objects.filter(book = book,user= user,is_deleted = False).exists():
             if request.POST.get('button_action') == "return_book":
-            
                 soft_delete = AssignedBook.objects.get(book = book,user= user,is_deleted = False)
                 soft_delete.is_deleted = True
                 soft_delete.save()
                 
                 response = {
                 "status": True,
-                "message": "Book Returened!",
-                # "delete_count": after_return_count,
-                # "add_avl_book":add_book_avl,
-                # "history": history
+                "message": "Book Returened successfully",
                 }
                 return JsonResponse(response,safe=False)
             else:
@@ -170,27 +163,9 @@ class AssignBookUser(View):
                 for books in AssignedBook.objects.filter(book = book,user=user):
                     book_list = {
                         "date_borrowed": books.date_borrowed,
-                     
                     }
                     data_list.append(book_list)
                 return JsonResponse(data_list,safe=False)
                 
-                # response = {
-                # "status": True,
-                # "message": "Book Returened!",
-                # # "delete_count": after_return_count,
-                # # "add_avl_book":add_book_avl,
-                # # "history": history
-                # }
-                
-
-            # after_return_count = AssignedBook.objects.filter(book=book,user=user,is_deleted=False).count()
-            # print(after_return_count)
-            
-            # count_assign_book = AssignedBook.objects.filter(book = book,is_deleted= True).count()
-            # # print(count_assign_book)
-            # add_book_avl = book.quantity + count_assign_book
-            # history = AssignedBook.date_borrowed
-
- 
-        
+        else:
+            return JsonResponse({"message":"done"})
