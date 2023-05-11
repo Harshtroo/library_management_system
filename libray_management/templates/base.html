@@ -69,6 +69,11 @@
           <a class="nav-link active btn-book-list" aria-current="page" href="{% url 'book_list' %}">Book List</a>&nbsp;&nbsp;
           {% else%}
           {% endif %}
+
+          {% if request.user.is_authenticated and request.user.role == 'librarian' %}
+          <a class="nav-link active btn-book-list" aria-current="page" href="{% url 'book_history' %}">Book History</a>&nbsp;&nbsp;
+          {% else%}
+          {% endif %}
           
           {% if request.user.is_authenticated %}
           <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">Logout</a>&nbsp;&nbsp;

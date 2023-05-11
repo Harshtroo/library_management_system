@@ -106,14 +106,23 @@
 
 
                     let tableHead = document.createElement("thead")
-                    var th = document.createElement('th')
+                    
                     var tr = document.createElement("tr")
 
-                    let addDate = document.createTextNode(' Assign Book Date')
+                    // var th = document.createElement('th')
+                    // let number = document.createTextNode('No.')
+                    // th.appendChild(number)
+                    // tr.appendChild(th)
+
+                    var th = document.createElement('th')
+                    let addDate = document.createTextNode('Assign Book Date')
                     th.appendChild(addDate)
                     tr.appendChild(th)
 
+                    
+
                     tableHead.appendChild(tr)
+
                     tableHtml.appendChild(tableHead)
 
                     let tableBody = document.createElement('tbody')

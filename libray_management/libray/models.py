@@ -37,10 +37,6 @@ class AssignedBook(models.Model):
         '''soft delete funcction'''
         self.is_deleted= True
         self.save()
-        
-    # def restore(self):
-    #     self.is_deleted = False
-    #     self.save()
-        
+
     def __str__(self) -> str:
         return self.book.book_name

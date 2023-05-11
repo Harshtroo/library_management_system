@@ -1,4 +1,5 @@
 from typing import Any
+from django import http
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, CreateView, ListView,FormView
@@ -169,3 +170,39 @@ class AssignBookUser(View):
                 
         else:
             return JsonResponse({"message":"done"})
+
+
+class BookHistory(TemplateView):
+    template_name = "book_history.html"
+    model =AssignedBook
+    
+    def get(self, request, *args, **kwargs):
+        return render(request,self.template_name)
+    
+    def post(self,request,*args,**kwargs):
+            
+        # Get all books and their assignment counts
+        assigned_books = AssignedBook.objects.values("book").annotate(count=Count("book"))
+
+        book_list = []
+        for assigned_book in assigned_books:
+            book = Book.objects.get(id=assigned_book['book'])
+            
+            # Get the count of assignments and returns for this book
+            assignments_count = AssignedBook.objects.filter(book=book, is_deleted=False).count()
+            returns_count = AssignedBook.objects.filter(book=book, is_deleted=True).count()
+            
+            # Add this book's information to the list
+            book_list.append({
+                "name": book.book_name,
+                "assign_count": assignments_count,
+                "return_count": returns_count
+            })
+        
+        return JsonResponse({"book_list": book_list})
+
+
+
+
+
+
