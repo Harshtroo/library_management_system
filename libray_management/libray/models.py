@@ -13,6 +13,8 @@ class User(AbstractUser):
         self.is_deleted = True
         self.save()
 
+    def __str__(self):
+        return self.username
 
 class Book(models.Model):
     book_image = models.ImageField(upload_to="books/", max_length=100)
@@ -21,7 +23,7 @@ class Book(models.Model):
     price = models.IntegerField()
     quantity = models.IntegerField(default=0)
     # user = models.ManyToManyField(User)
-        
+
     def __str__(self):
         return self.book_name
 

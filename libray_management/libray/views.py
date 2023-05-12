@@ -167,7 +167,6 @@ class AssignBookUser(View):
                     }
                     data_list.append(book_list)
                 return JsonResponse(data_list,safe=False)
-                
         else:
             return JsonResponse({"message":"done"})
 
@@ -175,30 +174,30 @@ class AssignBookUser(View):
 class BookHistory(TemplateView):
     template_name = "book_history.html"
     model =AssignedBook
-    
-    def get(self, request, *args, **kwargs):
-        return render(request,self.template_name)
-    
+
+    # def get(self, request, *args, **kwargs):
+    #     return render(request,self.template_name)
+
     def post(self,request,*args,**kwargs):
-            
         assigned_books = AssignedBook.objects.values("book").annotate(count=Count("book"))
         book_list = []
+        
         for assigned_book in assigned_books:
             book = Book.objects.get(id=assigned_book['book'])
+
             assignments_count = AssignedBook.objects.filter(book=book, is_deleted=False).count()
+            
+            assign_username = AssignedBook.objects.filter(book=book, is_deleted=False).values_list('user__username', flat=True)
+                     
             returns_count = AssignedBook.objects.filter(book=book, is_deleted=True).count()
             
-            if assignments_count == 0:
-                returns_count = 0
+            return_name = AssignedBook.objects.filter(book=book, is_deleted=True).values_list('user__username',flat=True)
+            
             book_list.append({
                 "name": book.book_name,
                 "assign_count": assignments_count,
-                "return_count": returns_count
+                "return_count": returns_count,
+                "assign_user":list(assign_username),
+                "return_name":list(return_name)
             })
         return JsonResponse({"book_list": book_list})
-
-
-
-
-
-
