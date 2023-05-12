@@ -2,52 +2,56 @@
 
 
 <html>
-    <head>
-        <style>
-            .table{
-                width: 50%;
-                align-items: center;
-                margin-top: 20px;
-            }
-        </style>
-    </head>
-    <body>
-        <table class="table mx-auto">
-            <tr class="table-dark">
-              <th>No.</th>
-              <th>Book Name</th>
-              <th>Assign Book </th>
-              <th>Return Book </th>
-            </tr>
-            <tr>
-              <td></td>
-              <td>Maria Anders</td>
-              <td>Germany</td>
-              <td>Germany</td>
 
-            </tr>
-            
-          </table>
-    </body>
-    <script>
-        $.ajax({
-            url: "{% url 'book_history' %}",
-            method: "POST",
-            type:"json",
-            headers: { "X-CSRFToken": "{{csrf_token}}" },
-            success: function (data){   
-                
-                console.log(data.book_list)
-                for (book in data.book_list){
-                    console.log(book["name"]);
-                }
-            },
-            error: function (data){
-                // debugger
-                // console.log(data.book_get)
-            }
+<head>
+    <style>
+        .table {
+            width: 50%;
+            align-items: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
 
-        })
-    </script>
+<body id="book_items">
+
+</body>
+<script>
+    $.ajax({
+        url: "{% url 'book_history' %}",
+        method: "POST",
+        type: "json",
+        headers: { "X-CSRFToken": "{{csrf_token}}" },
+        success: function (data) {
+
+            console.log(data.book_list)
+            for (i = 0; i < data.book_list.length; i++) {
+                var book = data.book_list[i]
+                console.log("book_name", book.name, "assign_count:", book.assign_count, "return_count:", book.return_count);
+                output = ` <table class="table mx-auto">
+                                <tr class="table-dark" >
+                                    <th>Book Name</th>
+                                    <th>Assign Book </th>
+                                    <th>Return Book </th>
+                                </tr>
+                                <tr id="book_details">
+                                
+                                    <td>${book.name}</td>
+                                    <td>${book.assign_count}</td>
+                                    <td>${book.return_count}</td>
+
+                                </tr>
+                                
+                            </table>`
+            }
+            document.getElementById("book_items").innerHTML += output
+        },
+        error: function (data) {
+            // debugger
+            console.log(data.error)
+        }
+
+    })
+</script>
+
 </html>
-

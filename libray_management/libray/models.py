@@ -21,7 +21,7 @@ class Book(models.Model):
     price = models.IntegerField()
     quantity = models.IntegerField(default=0)
     # user = models.ManyToManyField(User)
-    
+        
     def __str__(self):
         return self.book_name
 
