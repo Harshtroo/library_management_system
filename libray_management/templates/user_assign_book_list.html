@@ -105,11 +105,19 @@
                     let tableHead = document.createElement("thead")
                     
                     var tr = document.createElement("tr")
+
+                    // var th = document.createElement('th')
+                    // let no = document.createTextNode('No.')
+                    // th.appendChild(no)
+                    // tr.appendChild(th)
+
                     var th = document.createElement('th')
                     let addDate = document.createTextNode('Assign Book Date')
                     th.appendChild(addDate)
                     tr.appendChild(th)
 
+
+                    
                     tableHead.appendChild(tr)
                     tableHtml.appendChild(tableHead)
 
@@ -118,11 +126,15 @@
                     data.forEach((value, key) => {
                         let myDate = new Date(value.date_borrowed)
                         var tr = document.createElement('tr');
+
+                        
+
                         var td = document.createElement('td');
                         var myDate1 = `${myDate.getDate()}-${myDate.getMonth()}-${myDate.getFullYear()} (${myDate.getHours()} :${myDate.getMinutes()} : ${myDate.getSeconds()})`
                         var date = document.createTextNode(myDate1)
                         td.appendChild(date)
                         tr.appendChild(td);
+
                         tableBody.appendChild(tr);
 
                     })

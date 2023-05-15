@@ -17,7 +17,12 @@ from django.contrib.auth.models import Group, Permission
 from django.core import serializers
 from django.conf import settings
 from django.db.models import Count
-
+from django.utils import timezone
+import csv
+from django.core.mail import EmailMessage
+import zipfile
+import os
+import pyminizip
 
 class Home(TemplateView):
     template_name = "home.html"
@@ -150,9 +155,11 @@ class AssignBookUser(View):
         
         if AssignedBook.objects.filter(book = book,user= user,is_deleted = False).exists():
             if request.POST.get('button_action') == "return_book":
-                soft_delete = AssignedBook.objects.get(book = book,user= user,is_deleted = False)
-                soft_delete.is_deleted = True
-                soft_delete.save()
+                
+                assigned_book = AssignedBook.objects.get(book = book,user= user,is_deleted = False)
+                assigned_book.is_deleted = True
+                assigned_book.date_returned = timezone.now()
+                assigned_book.save()
                 
                 response = {
                 "status": True,
@@ -164,6 +171,7 @@ class AssignBookUser(View):
                 for books in AssignedBook.objects.filter(book = book,user=user):
                     book_list = {
                         "date_borrowed": books.date_borrowed,
+                        "date_return":books.date_returned,
                     }
                     data_list.append(book_list)
                 return JsonResponse(data_list,safe=False)
@@ -201,3 +209,55 @@ class BookHistory(TemplateView):
                 "return_name":list(return_name)
             })
         return JsonResponse({"book_list": book_list})
+
+def exportcsv(request):
+    user = AssignedBook.objects.all()
+    response = HttpResponse('text/csv')
+    response['Content-Disposition'] = 'attachment; filename=harsh.csv'
+    writer = csv.writer(response)
+    writer.writerow(['User Name','book name','assign date','return date'])
+    user_details = user.values_list('user__first_name','user__last_name','book__book_name','date_borrowed__date',"date_returned__date")
+    # print("________________",user_details)
+    # fields = ['User Name','book name','assign date','return date']
+    # with open('profiles3.csv', 'w', newline='') as file: 
+    #     writer = csv.DictWriter(file, fieldnames = fields)
+    #     writer.writerows(user_details)
+
+    
+    # writer.writeheader() 
+    for details in user_details:
+        full_name = f"{details[0]} {details[1]}"
+        writer.writerow([full_name, details[2], details[3], details[4]])
+    
+    csv_data = response.content
+    zip_filename = 'harsh.zip'
+    zip_password = request.user.email
+    
+    
+    # with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
+    #     zipf.setpassword(zip_password.encode('utf-8'))
+    #     print("???????????????????",zipf.setpassword(zip_password.encode('utf-8')))
+    #     zipf.writestr('harsh.csv', csv_data)
+    
+    with open('harsh.csv', 'a+') as f:
+        f.write("csv_data")
+    print(">>>>>>>>>>>>>>>",f"{settings.BASE_DIR} / harsh.csv")
+    pyminizip.compress(f"{settings.BASE_DIR}/harsh.csv",'zip',f"{settings.BASE_DIR /zip_filename}", zip_password, 0)
+    
+    email = EmailMessage(
+        subject = 'CSV Export',
+        body='Please find the attached zip file.',
+        from_email='harsh.vekariya@trootech.com',
+        to= [request.user.email]
+        )
+    
+    with open(zip_filename, 'rb') as file:
+        email.attach(zip_filename, file.read(), 'application/zip')
+        
+    compression_level=5
+    pyminizip.compress("harsh.csv","zip_filename", "zip_password", compression_level)
+    
+    email.send()
+    os.remove(zip_filename)
+    messages.success(request,"successfully send email.")
+    return redirect('/')

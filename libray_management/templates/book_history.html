@@ -17,11 +17,6 @@
 
 </body>
 <script>
-    
-    // function mouseOver(){
-    //         var datablock = document.getElementById("assig_count")
-    //         datablock = console.log(data);
-    //     }
     $.ajax({
         url: "{% url 'book_history' %}",
         method: "POST",
@@ -41,7 +36,8 @@
                 var book = data.book_list[i]
                 console.log("hello=====",book.assign_user)
                 console.log("book_name", book.name, "assign_count:", book.assign_count, "return_count:", book.return_count);
-                output += ` <tr id="book_details">
+                output += `
+                     <tr id="book_details">
                     <td>${book.name}</td>
                     <td id="assig_count" title="${book.assign_user}">${book.assign_count}</td>
                     <td title = "${book.assign_user}">${book.return_count}</td>
@@ -53,8 +49,6 @@
         error: function (data) {
             console.log(data.error)
         }
-        
-
     })
 
    
